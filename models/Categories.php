@@ -235,6 +235,9 @@ class Categories extends \panix\engine\db\ActiveRecord {
     public function getTopicsCount() {
         return $this->hasMany(Topics::className(), ['category_id' => 'id'])->count();
     }
+    public function getTopics() {
+        return $this->hasMany(Topics::className(), ['category_id' => 'id'])->orderBy('id DESC');
+    }
 
     /**
      * @return array relational rules.
@@ -242,8 +245,8 @@ class Categories extends \panix\engine\db\ActiveRecord {
     public function relations() {
         return array(
 
-            'topicsCount' => array(self::STAT, 'ForumTopics', 'category_id'),
-            'topics' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topics`.`id` DESC'),
+            //'topicsCount' => array(self::STAT, 'ForumTopics', 'category_id'),
+            //'topics' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topics`.`id` DESC'),
             'topicsList' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topicsList`.`fixed` DESC, `topicsList`.`date_update` DESC'),
 
             

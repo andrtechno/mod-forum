@@ -31,12 +31,12 @@
                 </div>
                 <?php if ($data->user) { ?>
                     <div><?= $data->user->rolesList[0]->description ?></div>
-                    <div><?= Yii::t('ForumModule.default', 'MESSAGES', array('{num}' => $data->user->forum_posts_count)) ?></div>    
+                    <div><?= Yii::t('forum/default', 'MESSAGES', array('{num}' => $data->user->forum_posts_count)) ?></div>    
                 <?php } ?>
 
             </div>
             <div class="col-md-10 col-sm-9 col-xs-8">
-                <div class="help-block"><?= Yii::t('ForumModule.default', 'POST_SENDDATE'); ?> <?= CMS::date($data->date_create, true, true); ?></div>
+                <div class="help-block"><?= Yii::t('forum/default', 'POST_SENDDATE'); ?> <?= CMS::date($data->date_create, true, true); ?></div>
                 <div id="post-edit-ajax-<?= $data->id; ?>">
                     <?php $this->renderPartial('_posts_content', array('data' => $data)); ?>
 

@@ -1,5 +1,7 @@
 <?php
 namespace panix\mod\forum\models;
+
+use Yii;;
 use panix\mod\user\models\User;
 class Topics extends \panix\engine\db\ActiveRecord {
 
@@ -33,7 +35,7 @@ class Topics extends \panix\engine\db\ActiveRecord {
                         'seo_alias' => array(
                             'type' => 'text',
                             'id' => 'alias',
-                            'visible' => (Yii::app()->settings->get('app', 'translate_object_url')) ? false : true
+                            'visible' => (Yii::$app->settings->get('app', 'translate_object_url')) ? false : true
                         ),
                         'short_text' => array(
                             'type' => 'TinymceArea',
@@ -200,7 +202,7 @@ class Topics extends \panix\engine\db\ActiveRecord {
      */
     public function behaviors() {
         $a = array();
-        if (Yii::app()->hasModule('comments')) {
+        if (Yii::$app->hasModule('comments')) {
             Yii::import('mod.comments.models.Comments');
             $a['comments'] = array(
                 'class' => 'mod.comments.components.CommentBehavior',
@@ -208,12 +210,9 @@ class Topics extends \panix\engine\db\ActiveRecord {
                 'owner_title' => 'title', // Attribute name to present comment owner in admin panel
             );
         }
-        $a['timezone'] = array(
-            'class' => 'app.behaviors.TimezoneBehavior',
-            'attributes' => array('date_create', 'date_update'),
-        );
 
-        return CMap::mergeArray($a, parent::behaviors());
+
+        return $a;
     }
 
     public static function getCSort() {

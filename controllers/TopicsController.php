@@ -1,28 +1,31 @@
 <?php
 
 namespace panix\mod\forum\controllers;
+
+use Yii;
 use panix\mod\forum\models\Topics;
 use panix\mod\forum\models\Categories;
 class TopicsController extends \panix\engine\controllers\WebController {
     public $model;
-    public function actionAddTopic() {
+    public function actionAdd($id) {
+
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
 
         $model = new Topics;
-        $model->category_id = $_GET['id'];
+        $model->category_id = $id;
 
 
-        $category = Categories::findOne($_GET['id']);
+        $category = Categories::findOne($id);
 
 
-        $ancestors = $category->ancestors()->excludeRoot()->findAll();
+        $ancestors = $category->ancestors()->excludeRoot()->all();
         $this->breadcrumbs = array($this->pageName => array('/forum'));
         foreach ($ancestors as $c)
             $this->breadcrumbs[$c->name] = $c->getUrl();
 
         $this->breadcrumbs[] = $category->name;
 
-        if (Yii::$app->request->isPostRequest) {
+        if (Yii::$app->request->isPost) {
             $model->attributes = $_POST['ForumTopics'];
             if ($model->validate()) {
                 if ($model->save()) {
@@ -31,14 +34,14 @@ class TopicsController extends \panix\engine\controllers\WebController {
                     $post = new Posts;
                     $post->topic_id = $model->id;
                     $post->text = $model->text;
-                    $post->save(false, false, false);
+                    $post->save(false);
 
                     $model->category->count_topics++;
                     $model->category->last_post_user_id = $post->user_id;
                     $model->category->last_post_id = $post->id;
                     $model->category->last_topic_id = $model->id;
 
-                    $model->category->saveNode(false, false, false);
+                    $model->category->saveNode(false);
                     $ancestors = $model->category->ancestors()->all();
                     if ($ancestors) {
                         foreach ($ancestors as $category) {

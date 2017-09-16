@@ -1,4 +1,4 @@
-<h2><?= Yii::t('ForumModule.default', 'TITLE_ADD_TOPIC', array('{name}' => $category->name)) ?></h2>
+<h2><?= Yii::t('forum/default', 'TITLE_ADD_TOPIC', array('{name}' => $category->name)) ?></h2>
 
 
 <?php
@@ -35,7 +35,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <?= $form->error($model, 'text'); ?>
         </div>
         <div class="form-group text-center">
-            <?= Html::submitButton(Yii::t('ForumModule.default', 'ADD_TOPIC'), array('class' => 'btn btn-primary')); ?>
+            <?= Html::submitButton(Yii::t('forum/default', 'ADD_TOPIC'), array('class' => 'btn btn-primary')); ?>
         </div>
 
     </div>

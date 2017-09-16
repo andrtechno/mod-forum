@@ -16,9 +16,9 @@ class DefaultController extends \panix\engine\controllers\WebController {
     public function actionView($id) {
 
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
-        $this->model = Categories::find()->published()->one($id);
+        $this->model = Categories::findOne($id);
 
-print_r($this->model);die;
+
         if (!$this->model)
             $this->error404();
 

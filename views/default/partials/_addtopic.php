@@ -1,5 +1,9 @@
-    <div class="form-group text-right">
-        <?php if (Yii::app()->user->isSuperuser) { ?>
+<?php
+use panix\engine\Html;
+?>
+
+<div class="form-group text-right">
+        <?php if (Yii::$app->user->can('admin')) { ?>
             <span class="dropdown">
                 <a class="btn btn-link dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     Опции форума
@@ -13,7 +17,7 @@
             </span>
         <?php } ?>
         <?php if ($model->checkAddTopic()) { ?>
-            <?= Html::link('<i class="icon-add"></i> Новая тема', Yii::app()->createUrl('/forum/topics/addTopic', array('id' => $model->id)), array('class' => 'btn btn-success')) ?>
+            <?= Html::a('<i class="icon-add"></i> Новая тема', ['/forum/topics/addTopic', 'id' => $model->id], array('class' => 'btn btn-success')) ?>
         <?php } ?>
 
     </div>

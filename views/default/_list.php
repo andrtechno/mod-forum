@@ -2,8 +2,7 @@
     <div class="panel-heading">
         <?= Html::link($data->title, $data->getUrl(), array('title' => $data->title)) ?>
         <span class="pull-right date-time"><?= CMS::date($data->date_create,true,true) ?></span>
-        <?php $this->widget('mod.users.widgets.favorites.FavoritesWidget', array('model' => $data)); ?>
-        <?php $this->widget('ext.admin.frontControl.FrontControlWidget', array('data' => $data, 'options' => array('position' => 'right'))); ?>
+
     </div>
     <div class="panel-body">
         <?= Html::text($data->short_text); ?>

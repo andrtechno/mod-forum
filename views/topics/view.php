@@ -30,11 +30,11 @@
         <div class="panel-heading">
             <?php
             if (count($model->posts) >= 1) {
-                echo Yii::t('ForumModule.default', 'POST_MESSAGES_NUM', array('{count}' => count($model->posts) - 1));
+                echo Yii::t('forum/default', 'POST_MESSAGES_NUM', array('{count}' => count($model->posts) - 1));
             } elseif (count($model->posts) <= 1) {
-                echo Yii::t('ForumModule.default', 'POST_MESSAGES_NO');
+                echo Yii::t('forum/default', 'POST_MESSAGES_NO');
             } else {
-                echo Yii::t('ForumModule.default', 'POST_MESSAGES_ONE');
+                echo Yii::t('forum/default', 'POST_MESSAGES_ONE');
             }
             ?>
 
@@ -91,7 +91,7 @@
         $session = Session::model()->with('user')->findAllByAttributes(array('current_url' => Yii::app()->request->url));
         ?>
 
-        <h4><?= Yii::t('ForumModule.default', ($this->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', array('{num}' => count($session))); ?></h4>
+        <h4><?= Yii::t('forum/default', ($this->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', array('{num}' => count($session))); ?></h4>
         <?php
         $t = 0;
         $guests = 0;
