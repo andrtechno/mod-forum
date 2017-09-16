@@ -1,9 +1,7 @@
 <?php
+namespace panix\mod\forum\models;
 
-/**
- * Present ShopCategory as JsTree node.
- */
-class ForumCategoriesNode extends CComponent implements ArrayAccess {
+class CategoriesNode extends \yii\base\Component implements ArrayAccess {
 
     /**
      * @var ShopCategory

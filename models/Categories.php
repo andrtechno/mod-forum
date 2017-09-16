@@ -1,9 +1,25 @@
 <?php
+namespace panix\mod\forum\models;
 
-class ForumPosts extends ActiveRecord {
+use Yii;
+use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
+use panix\mod\forum\models\query\CategoryQuery;
+use panix\mod\forum\models\Topics;
+class Categories extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'forum';
     const route = '/forum/admin/default';
+
+    public function checkAddTopic(){
+        if(Yii::$app->user->isGuest && Yii::$app->settings->get('forum', 'enable_guest_addtopic')){
+            return true;
+        }else{
+            if(!Yii::$app->user->isGuest){
+                  return true;
+            }
+            return false;
+        }
+    }
 
     public function getForm() {
         Yii::import('zii.widgets.jui.CJuiDatePicker');
@@ -23,14 +39,14 @@ class ForumPosts extends ActiveRecord {
                     'type' => 'form',
                     'title' => self::t('TAB_CONTENT'),
                     'elements' => array(
-                        'title' => array(
+                        'name' => array(
                             'type' => 'text',
                             'id' => 'title'
                         ),
                         'seo_alias' => array(
                             'type' => 'text',
                             'id' => 'alias',
-                            'visible' => (Yii::app()->settings->get('app', 'translate_object_url')) ? false : true
+                            'visible' => (Yii::$app->settings->get('app', 'translate_object_url')) ? false : true
                         ),
                         'short_text' => array(
                             'type' => 'TinymceArea',
@@ -88,7 +104,7 @@ class ForumPosts extends ActiveRecord {
                                 'overwriteInitial' => false,
                                 'elErrorContainer' => '#kv-avatar-errors',
                                 'msgErrorClass' => 'alert alert-danger',
-                                'initialPreview' => $this->initialPreview(),
+                              //  'initialPreview' => $this->initialPreview(),
                                 //  'defaultPreviewContent' => '<img src="/uploads/'.$this->filesList[0]['filename'].'" alt="Your Avatar">',
                                 //'layoutTemplates' => "{main2: '{preview}  {remove} {browse}'}",
                                 'allowedFileExtensions' => array("jpg", "png", "gif"),
@@ -134,28 +150,18 @@ class ForumPosts extends ActiveRecord {
     public function getGridColumns() {
         return array(
             array(
-                'name' => 'title',
+                'name' => 'name',
                 'type' => 'raw',
                 'htmlOptions' => array('class' => 'text-left'),
-                'value' => 'Html::link(Html::encode($data->title),"/news/$data->seo_alias", array("target"=>"_blank"))',
+                'value' => 'Html::link(Html::encode($data->name),"/forum/category/$data->id", array("target"=>"_blank"))',
             ),
-            array(
-                'name' => 'user_id',
-                'type' => 'raw',
-                'value' => 'CMS::userLink($data->user)',
-                'htmlOptions' => array('class' => 'text-center')
-            ),
+
             array(
                 'name' => 'views',
                 'value' => '$data->views',
                 'htmlOptions' => array('class' => 'text-center')
             ),
-            array(
-                'name' => 'rating',
-                'type' => 'raw',
-                'htmlOptions' => array('class' => 'text-center'),
-                'value' => 'CMS::vote_graphic($data->score,$data->rating)',
-            ),
+
             array(
                 'name' => 'date_create',
                 'value' => 'CMS::date($data->date_create)',
@@ -175,19 +181,12 @@ class ForumPosts extends ActiveRecord {
         );
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * @return Page the static model class
-     */
-    public static function model($className = __CLASS__) {
-        return parent::model($className);
-    }
 
     /**
      * @return string the associated database table name
      */
-    public function tableName() {
-        return '{{forum_posts}}';
+    public static function tableName() {
+        return '{{%forum_categories}}';
     }
 
     public function scopes() {
@@ -199,7 +198,7 @@ class ForumPosts extends ActiveRecord {
     }
 
     public function getUrl() {
-        return Yii::app()->createUrl('/news/default/view', array('seo_alias' => $this->seo_alias));
+        return ['/forum/default/view', 'id' => $this->id];
     }
 
     /**
@@ -217,31 +216,24 @@ class ForumPosts extends ActiveRecord {
         return $this;
     }
 
-    public function afterSave() {
-
-
-        if (!Yii::app()->user->isGuest) {
-            $user = User::model()->findByPk($this->user_id);
-            $user->saveCounters(array('forum_posts_count' => 1));
-        }
-
-
-        return parent::afterSave();
-    }
-
     /**
      * @return array validation rules for model attributes.
      */
     public function rules() {
         return array(
-            array('text, edit_reason', 'type', 'type' => 'string'),
-            array('text', 'length', 'min' => 3),
-            array('text, topic_id, user_id', 'required'),
+            array('name, hint', 'type', 'type' => 'string'),
+            array('name', 'length', 'min' => 3),
+            array('name', 'required'),
+
             array('date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-            array('text', 'length', 'max' => 255),
-            array('edit_user_id, user_id', 'numerical', 'integerOnly' => true),
-            array('id, user_id, edit_user_id, edit_reason, edit_datetime, seo_alias, text, full_text, date_update, date_create', 'safe', 'on' => 'search'),
+            array('seo_alias', 'length', 'max' => 255),
+            array('name', 'length', 'max' => 140),
+            array('id, name, seo_alias, hint, date_update, date_create', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function getTopicsCount() {
+        return $this->hasMany(Topics::className(), ['category_id' => 'id'])->count();
     }
 
     /**
@@ -249,93 +241,52 @@ class ForumPosts extends ActiveRecord {
      */
     public function relations() {
         return array(
-            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-            'userEdit' => array(self::BELONGS_TO, 'User', 'edit_user_id'),
-            'topic' => array(self::BELONGS_TO, 'ForumTopics', 'topic_id'),
+
+            'topicsCount' => array(self::STAT, 'ForumTopics', 'category_id'),
+            'topics' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topics`.`id` DESC'),
+            'topicsList' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topicsList`.`fixed` DESC, `topicsList`.`date_update` DESC'),
+
+            
+
+            
+            //'lastTopic' => array(self::BELONGS_TO, 'ForumTopics', 'id','order'=>'`lastTopic`.`id` DESC'),
+            //'lastPost' => array(self::BELONGS_TO, 'ForumPosts', 'id','order'=>'`lastPost`.`id` DESC'),
+            'lastTopic' => array(self::BELONGS_TO, 'ForumTopics', 'last_topic_id'),
+
+            'lastPost' => array(self::BELONGS_TO, 'ForumPosts', 'last_post_id'),
+
+            
+
         );
     }
+    public static function find() {
+        return new CategoryQuery(get_called_class());
+    }
 
-    /**
-     * @return array
-     */
+
     public function behaviors() {
-        $a = array();
-        $a['timeline'] = array(
-            'class' => 'app.behaviors.TimelineBehavior',
-            'attributes' => 'title',
-        );
-        if (Yii::app()->hasModule('comments')) {
-            Yii::import('mod.comments.models.Comments');
-            $a['comments'] = array(
-                'class' => 'mod.comments.components.CommentBehavior',
-                'model' => 'mod.shop.models.ShopProduct',
-                'owner_title' => 'title', // Attribute name to present comment owner in admin panel
-            );
-        }
-        $a['timezone'] = array(
-            'class' => 'app.behaviors.TimezoneBehavior',
-            'attributes' => array('date_create', 'date_update'),
-        );
-
-
-        return CMap::mergeArray($a, parent::behaviors());
+        return [
+            'tree' => [
+                'class' => NestedSetsBehavior::className(),
+            // 'treeAttribute' => 'tree',
+            // 'leftAttribute' => 'lft',
+            // 'rightAttribute' => 'rgt',
+            'levelAttribute' => 'level',
+            ],
+        ];
     }
+
 
     public static function getCSort() {
         $sort = new CSort;
         // $sort->defaultOrder = 't.ordern DESC';
         $sort->attributes = array(
             '*',
-            'title' => array(
-                'asc' => 'translate.title',
-                'desc' => 'translate.title DESC',
-            )
         );
 
         return $sort;
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions. Used in admin search.
-     * @return ActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    public function search() {
-        $criteria = new CDbCriteria;
 
-        $criteria->with = array('user', 'userEdit');
-
-        $criteria->compare('t.id', $this->id);
-        $criteria->compare('user.username', $this->user_id, true);
-        $criteria->compare('userEdit.username', $this->edit_user_id, true);
-        $criteria->compare('translate.title', $this->title, true);
-        $criteria->compare('t.seo_alias', $this->seo_alias, true);
-        $criteria->compare('translate.full_text', $this->full_text, true);
-        $criteria->compare('translate.short_text', $this->short_text, true);
-        $criteria->compare('t.date_create', $this->date_create, true);
-        $criteria->compare('t.date_update', $this->date_update, true);
-        $criteria->compare('t.switch', $this->switch);
-
-        return new ActiveDataProvider($this, array(
-            'criteria' => $criteria,
-            'sort' => self::getCSort(),
-            'pagination' => array('pageVar' => 'page'/* ,'route'=>'/news' */)
-        ));
-    }
-
-    public function isEditPost() {
-        if (Yii::app()->user->isSuperuser) {
-            return true;
-        } else {
-            if ($this->user_id == Yii::app()->user->id) {
-            if (time() < strtotime($this->date_create) + (int) Yii::app()->settings->get('forum', 'edit_post_time') * 60) {
-                return true;
-            } else {
-                return false;
-            }
-            }else{
-                return false;
-            }
-        }
-    }
 
 }

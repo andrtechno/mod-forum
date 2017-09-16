@@ -1,22 +1,24 @@
 <?php
 namespace panix\mod\forum\controllers;
 
+use Yii;
+use panix\mod\forum\models\Categories;
 class DefaultController extends \panix\engine\controllers\WebController {
 
     public function actionIndex() {
-        $this->dataModel = ForumCategories::model()->roots()->findAll();
-        $this->pageName = Yii::t('ForumModule.default', 'MODULE_NAME');
+        $this->dataModel = Categories::find()->roots()->all();
+        $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
         $this->render('index', array(
             'categories' => $this->dataModel,
         ));
     }
 
     public function actionView($id) {
-        $this->pageName = Yii::t('ForumModule.default', 'MODULE_NAME');
-        $this->dataModel = ForumCategories::model()
+        $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
+        $this->dataModel = Categories::find()
                 ->published()
                 //->with('parents')
-                ->findByPk($id);
+                ->one($id);
 
 
         if (!$this->dataModel)
@@ -27,7 +29,7 @@ class DefaultController extends \panix\engine\controllers\WebController {
 
 
 
-        $ancestors = $this->dataModel->excludeRoot()->ancestors()->findAll();
+        $ancestors = $this->dataModel->ancestors()->excludeRoot()->all();
         $this->breadcrumbs = array($this->pageName => array('/forum'));
         foreach ($ancestors as $c)
             $this->breadcrumbs[$c->name] = $c->getUrl();
@@ -46,18 +48,18 @@ class DefaultController extends \panix\engine\controllers\WebController {
         //            ->findByPk($_GET['parent_id']);
         //  }
         //if (!$model)
-        //    throw new CHttpException(404, Yii::t('ForumModule.admin', 'NO_FOUND_CATEGORY'));
+        //    throw new CHttpException(404, Yii::t('forum/admin', 'NO_FOUND_CATEGORY'));
         // $oldImage = $model->image;
 
-        $model = new ForumCategories;
+        $model = new Categories;
 
         if (!$model)
-            throw new CHttpException(404, Yii::t('ForumModule.admin', 'NO_FOUND_CATEGORY'));
+            throw new CHttpException(404, Yii::t('forum/admin', 'NO_FOUND_CATEGORY'));
 
-        $parent = ForumCategories::model()->findByPk($parent_id);
+        $parent = Categories::model()->findByPk($parent_id);
 
 
-        if (Yii::app()->request->isPostRequest) {
+        if (Yii::$app->request->isPost) {
             $model->attributes = $_POST['ForumCategories'];
 
             if ($model->validate()) {
@@ -73,14 +75,14 @@ class DefaultController extends \panix\engine\controllers\WebController {
     }
 
     public function actionQuote() {
-        if (Yii::app()->request->isAjaxRequest) {
+        if (Yii::$app->request->isAjaxRequest) {
             $result = array();
 
             $post = ForumPosts::model()->findByPk($_GET['post_id']);
 
             $result['quote_html'] = $this->renderPartial('partials/_ajax_quote_html', array('post' => $post), true, false);
             echo CJSON::encode($result);
-            Yii::app()->end();
+            Yii::$app->end();
         } else {
             throw new CHttpException(500);
         }

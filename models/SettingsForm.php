@@ -1,6 +1,6 @@
 <?php
-
-class SettingsForumForm extends FormSettingsModel {
+namespace panix\mod\forum\models;
+class SettingsForm extends \panix\engine\SettingsModel {
 
     public $pagenum;
     public $edit_post_time;

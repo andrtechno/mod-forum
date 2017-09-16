@@ -1,11 +1,9 @@
 <?php
-
-class ForumTopics extends ActiveRecord {
+namespace panix\mod\forum\models;
+class Posts extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'forum';
     const route = '/forum/admin/default';
-
-    public $text;
 
     public function getForm() {
         Yii::import('zii.widgets.jui.CJuiDatePicker');
@@ -69,6 +67,59 @@ class ForumTopics extends ActiveRecord {
                         ),
                     ),
                 ),
+                'kartinka' => array(
+                    'type' => 'form',
+                    'title' => self::t('TAB_IMG2'),
+                    'elements' => array(
+                        'files' => array(
+                            'type' => 'FileInput',
+                            'htmlOptions' => array('multiple' => true),
+                            'options' => array(
+                                'showUpload' => false,
+                                'showPreview' => true,
+                                //  'maxFileCount'=> 2,
+                                //  'validateInitialCount'=> true,
+                                'uploadAsync' => false,
+                                'maxFileSize' => 35000,
+                                // 'showClose' => false,
+                                //'showCaption' => true,
+                                // 'browseLabel' => '',
+                                //'removeLabel' => '',
+                                'overwriteInitial' => false,
+                                'elErrorContainer' => '#kv-avatar-errors',
+                                'msgErrorClass' => 'alert alert-danger',
+                                'initialPreview' => $this->initialPreview(),
+                                //  'defaultPreviewContent' => '<img src="/uploads/'.$this->filesList[0]['filename'].'" alt="Your Avatar">',
+                                //'layoutTemplates' => "{main2: '{preview}  {remove} {browse}'}",
+                                'allowedFileExtensions' => array("jpg", "png", "gif"),
+                                'initialPreviewAsData' => true, // identify if you are sending preview data only and not the raw markup
+                                'initialPreviewFileType' => 'image', // image is the default and can be overridden in config below
+                                'initialPreviewConfig' => array(
+                                    array('caption' => "People-1.jpg", 'size' => 576237, 'width' => "120px", 'url' => "/admin/news/default/deleteFile", 'key' => 1),
+                                    array('caption' => "People-2.jpg", 'size' => 932882, 'width' => "120px", 'url' => "/admin/news/default/deleteFile", 'key' => 2),
+                                ),
+                                /*      'uploadExtraData'=>"js:function() {  // callback example
+                                  var out = {}, key, i = 0;
+                                  $('.kv-input:visible').each(function() {
+                                  var el = $(this);
+                                  key = el.hasClass('kv-new') ? 'new_' + i : 'init_' + i;
+                                  out[key] = el.val();
+                                  i++;
+                                  });
+                                  return out;
+                                  }", */
+                                'uploadExtraData' => array(
+                                    'img_key' => "1000",
+                                    'img_keywords' => "happy, places",
+                                ),
+                                'previewSettings' => array(
+                                    'image' => array('width' => "120px", 'height' => "120px"),
+                                )
+                            ),
+                            'afterContent' => '<div id="kv-avatar-errors" style="display:none"></div>'
+                        ),
+                    ),
+                ),
             ),
             'buttons' => array(
                 'submit' => array(
@@ -86,7 +137,7 @@ class ForumTopics extends ActiveRecord {
                 'name' => 'title',
                 'type' => 'raw',
                 'htmlOptions' => array('class' => 'text-left'),
-                'value' => 'Html::link(Html::encode($data->title),"/forum/topic/1/$data->seo_alias", array("target"=>"_blank"))',
+                'value' => 'Html::link(Html::encode($data->title),"/news/$data->seo_alias", array("target"=>"_blank"))',
             ),
             array(
                 'name' => 'user_id',
@@ -124,19 +175,13 @@ class ForumTopics extends ActiveRecord {
         );
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * @return Page the static model class
-     */
-    public static function model($className = __CLASS__) {
-        return parent::model($className);
-    }
+
 
     /**
      * @return string the associated database table name
      */
-    public function tableName() {
-        return '{{forum_topics}}';
+    public static function tableName() {
+        return '{{%forum_posts}}';
     }
 
     public function scopes() {
@@ -148,7 +193,7 @@ class ForumTopics extends ActiveRecord {
     }
 
     public function getUrl() {
-        return Yii::app()->createUrl('/forum/topics/view', array('id' => $this->id));
+        return Yii::app()->createUrl('/news/default/view', array('seo_alias' => $this->seo_alias));
     }
 
     /**
@@ -166,18 +211,30 @@ class ForumTopics extends ActiveRecord {
         return $this;
     }
 
+    public function afterSave() {
+
+
+        if (!Yii::app()->user->isGuest) {
+            $user = User::model()->findByPk($this->user_id);
+            $user->saveCounters(array('forum_posts_count' => 1));
+        }
+
+
+        return parent::afterSave();
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
     public function rules() {
         return array(
-            array('title, text', 'type', 'type' => 'string'),
-            array('title, text', 'length', 'min' => 3),
-            array('title, text', 'required'),
-            array('is_close', 'boolean'),
+            array('text, edit_reason', 'type', 'type' => 'string'),
+            array('text', 'length', 'min' => 3),
+            array('text, topic_id, user_id', 'required'),
             array('date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-            array('title', 'length', 'max' => 140),
-            array('id, user_id, title, date_update, date_create', 'safe', 'on' => 'search'),
+            array('text', 'length', 'max' => 255),
+            array('edit_user_id, user_id', 'numerical', 'integerOnly' => true),
+            array('id, user_id, edit_user_id, edit_reason, edit_datetime, seo_alias, text, full_text, date_update, date_create', 'safe', 'on' => 'search'),
         );
     }
 
@@ -187,16 +244,8 @@ class ForumTopics extends ActiveRecord {
     public function relations() {
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-            //  'topicsCount' => array(self::STAT, 'ForumTopics', 'id'),
-            'postsCount' => array(self::STAT, 'ForumPosts', 'topic_id'),
-            'posts' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order' => '`posts`.`id` ASC'),
-            'postsDesc' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order' => '`postsDesc`.`id` DESC'),
-            'category' => array(self::BELONGS_TO, 'ForumCategories', 'category_id'),
-            'postLast' => array(self::BELONGS_TO, 'ForumPosts', 'last_post_id'),
-                //'posts' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order'=>'`posts`.`date_create` DESC'),
-                //'parent' => array(self::BELONGS_TO, 'ForumTopics', 'parent_id'),
-                //'parents' => array(self::HAS_MANY, 'ForumTopics', 'parent_id'),
-                //'parentsCount' => array(self::STAT, 'ForumTopics', 'parent_id'),
+            'userEdit' => array(self::BELONGS_TO, 'User', 'edit_user_id'),
+            'topic' => array(self::BELONGS_TO, 'ForumTopics', 'topic_id'),
         );
     }
 
@@ -205,6 +254,10 @@ class ForumTopics extends ActiveRecord {
      */
     public function behaviors() {
         $a = array();
+        $a['timeline'] = array(
+            'class' => 'app.behaviors.TimelineBehavior',
+            'attributes' => 'title',
+        );
         if (Yii::app()->hasModule('comments')) {
             Yii::import('mod.comments.models.Comments');
             $a['comments'] = array(
@@ -217,6 +270,7 @@ class ForumTopics extends ActiveRecord {
             'class' => 'app.behaviors.TimezoneBehavior',
             'attributes' => array('date_create', 'date_update'),
         );
+
 
         return CMap::mergeArray($a, parent::behaviors());
     }
@@ -242,12 +296,15 @@ class ForumTopics extends ActiveRecord {
     public function search() {
         $criteria = new CDbCriteria;
 
-        $criteria->with = array('user');
+        $criteria->with = array('user', 'userEdit');
 
         $criteria->compare('t.id', $this->id);
         $criteria->compare('user.username', $this->user_id, true);
-        $criteria->compare('t.title', $this->title, true);
+        $criteria->compare('userEdit.username', $this->edit_user_id, true);
+        $criteria->compare('translate.title', $this->title, true);
         $criteria->compare('t.seo_alias', $this->seo_alias, true);
+        $criteria->compare('translate.full_text', $this->full_text, true);
+        $criteria->compare('translate.short_text', $this->short_text, true);
         $criteria->compare('t.date_create', $this->date_create, true);
         $criteria->compare('t.date_update', $this->date_update, true);
         $criteria->compare('t.switch', $this->switch);
@@ -257,6 +314,22 @@ class ForumTopics extends ActiveRecord {
             'sort' => self::getCSort(),
             'pagination' => array('pageVar' => 'page'/* ,'route'=>'/news' */)
         ));
+    }
+
+    public function isEditPost() {
+        if (Yii::app()->user->isSuperuser) {
+            return true;
+        } else {
+            if ($this->user_id == Yii::app()->user->id) {
+            if (time() < strtotime($this->date_create) + (int) Yii::app()->settings->get('forum', 'edit_post_time') * 60) {
+                return true;
+            } else {
+                return false;
+            }
+            }else{
+                return false;
+            }
+        }
     }
 
 }
