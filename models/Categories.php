@@ -3,7 +3,7 @@ namespace panix\mod\forum\models;
 
 use Yii;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
-use panix\mod\forum\models\query\CategoryQuery;
+use panix\mod\forum\models\query\CategoriesQuery;
 use panix\mod\forum\models\Topics;
 class Categories extends \panix\engine\db\ActiveRecord {
 
@@ -260,7 +260,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
         );
     }
     public static function find() {
-        return new CategoryQuery(get_called_class());
+        return new CategoriesQuery(get_called_class());
     }
 
 
@@ -274,17 +274,6 @@ class Categories extends \panix\engine\db\ActiveRecord {
             'levelAttribute' => 'level',
             ],
         ];
-    }
-
-
-    public static function getCSort() {
-        $sort = new CSort;
-        // $sort->defaultOrder = 't.ordern DESC';
-        $sort->attributes = array(
-            '*',
-        );
-
-        return $sort;
     }
 
 

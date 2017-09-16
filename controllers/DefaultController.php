@@ -4,39 +4,44 @@ namespace panix\mod\forum\controllers;
 use Yii;
 use panix\mod\forum\models\Categories;
 class DefaultController extends \panix\engine\controllers\WebController {
-
+    public $model;
     public function actionIndex() {
-        $this->dataModel = Categories::find()->roots()->all();
+        $this->model = Categories::find()->roots()->all();
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
-        $this->render('index', array(
-            'categories' => $this->dataModel,
+        return $this->render('index', array(
+            'categories' => $this->model,
         ));
     }
 
     public function actionView($id) {
+
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
-        $this->dataModel = Categories::find()
-                ->published()
-                //->with('parents')
-                ->one($id);
+        $this->model = Categories::find()->published()->one($id);
 
-
-        if (!$this->dataModel)
-            throw new CHttpException(404);
+print_r($this->model);die;
+        if (!$this->model)
+            $this->error404();
 
 
         //$this->dataModel->saveCounters(array('views' => 1));
 
 
 
-        $ancestors = $this->dataModel->ancestors()->excludeRoot()->all();
-        $this->breadcrumbs = array($this->pageName => array('/forum'));
-        foreach ($ancestors as $c)
-            $this->breadcrumbs[$c->name] = $c->getUrl();
+        $ancestors = $this->model->ancestors()->excludeRoot()->all();
+        $this->breadcrumbs[] = [
+            'label'=>$this->pageName,
+            'url'=>['/forum']
+            ];
+        foreach ($ancestors as $c){
+            $this->breadcrumbs[] = [
+                'label'=>$c->name,
+               'url'=>$c->getUrl()
+            ];
+        }
 
-        $this->breadcrumbs[] = $this->dataModel->name;
-        $this->render('view', array(
-            'model' => $this->dataModel,
+        $this->breadcrumbs[] = $this->model->name;
+        return $this->render('view', array(
+            'model' => $this->model,
         ));
     }
 
@@ -54,9 +59,9 @@ class DefaultController extends \panix\engine\controllers\WebController {
         $model = new Categories;
 
         if (!$model)
-            throw new CHttpException(404, Yii::t('forum/admin', 'NO_FOUND_CATEGORY'));
+            $this->error404(Yii::t('forum/admin', 'NO_FOUND_CATEGORY'));
 
-        $parent = Categories::model()->findByPk($parent_id);
+        $parent = Categories::find()->one($parent_id);
 
 
         if (Yii::$app->request->isPost) {
@@ -75,10 +80,10 @@ class DefaultController extends \panix\engine\controllers\WebController {
     }
 
     public function actionQuote() {
-        if (Yii::$app->request->isAjaxRequest) {
+        if (Yii::$app->request->isAjax) {
             $result = array();
 
-            $post = ForumPosts::model()->findByPk($_GET['post_id']);
+            $post = Posts::find()->one($_GET['post_id']);
 
             $result['quote_html'] = $this->renderPartial('partials/_ajax_quote_html', array('post' => $post), true, false);
             echo CJSON::encode($result);
