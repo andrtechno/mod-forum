@@ -1,0 +1,21 @@
+{
+    "name": "panix/mod-forum",
+    "description": "Module forum",
+    "keywords": ["corner-cms", "module", "forum"],
+    "homepage": "https://github.com/andrtechno/mod-forum",
+    "type": "yii2-extension",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "CORNER CMS",
+            "email": "dev@corner-cms.com",
+            "homepage": "http://www.corner-cms.com/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "panix\\mod\\forum\\": ""
+        }
+    }
+}
