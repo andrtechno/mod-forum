@@ -5,6 +5,7 @@ namespace panix\mod\forum\controllers;
 use Yii;
 use panix\mod\forum\models\Topics;
 use panix\mod\forum\models\Categories;
+use panix\mod\forum\models\Posts;
 class TopicsController extends \panix\engine\controllers\WebController {
     public $model;
     public function actionAdd($id) {
@@ -18,16 +19,17 @@ class TopicsController extends \panix\engine\controllers\WebController {
         $category = Categories::findOne($id);
 
 
-        $ancestors = $category->ancestors()->excludeRoot()->all();
-        $this->breadcrumbs = array($this->pageName => array('/forum'));
-        foreach ($ancestors as $c)
-            $this->breadcrumbs[$c->name] = $c->getUrl();
-
+      //  $ancestors = $category->ancestors()->excludeRoot()->all();
+        $this->breadcrumbs[] = [
+            'label'=>$this->pageName,
+            'url'=>['/forum']
+];
+       // foreach ($ancestors as $c){
+           // $this->breadcrumbs[$c->name] = $c->getUrl();
+      //  }
         $this->breadcrumbs[] = $category->name;
-
-        if (Yii::$app->request->isPost) {
-            $model->attributes = $_POST['ForumTopics'];
-            if ($model->validate()) {
+        $post = Yii::$app->request->post();
+        if ($model->load($post) && $model->validate()) {
                 if ($model->save()) {
 
 
@@ -49,43 +51,41 @@ class TopicsController extends \panix\engine\controllers\WebController {
                             $category->last_post_user_id = $post->user_id;
                             $category->last_post_id = $post->id;
                             $category->last_topic_id = $model->id;
-                            $category->saveNode(false, false, false);
+                            $category->saveNode(false);
                         }
                     }
                 }
                 return $this->redirect(array('/forum/default/view', 'id' => $_GET['id']));
-            }
+        
         }
         return $this->render('addtopic', array('model' => $model, 'category' => $category));
     }
 
     public function actionView($id) {
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
-        $this->model = ForumTopics::model()
-                //->published()
-                //->with('parents')
-                ->findByPk($id);
+        $this->model = Topics::findOne($id);
 
 
         if (!$this->model)
-            throw new CHttpException(404);
+            $this->error404();
 
 
-        $this->model->saveCounters(array('views' => 1));
+        $this->model->updateCounters(['views' => 1]);
 
 
-        $this->breadcrumbs = array(
+        /*$this->breadcrumbs = array(
             $this->pageName => array('/forum'),
             $this->model->category->name => $this->model->category->getUrl(),
             $this->model->title
-        );
+        );*/
 
 
-        $providerPosts = new CArrayDataProvider($this->model->posts, array(
+        $providerPosts = new \yii\data\ArrayDataProvider([
+                    'allModels'=>$this->model->posts, 
             'pagination' => array(
-                'pageSize' => Yii::$app->settings->get('forum', 'pagenum'),
-            ),
-                )
+                'pageSize' => 10,
+            )
+                ]
         );
 
         return $this->render('view', array(

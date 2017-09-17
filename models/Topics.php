@@ -10,124 +10,6 @@ class Topics extends \panix\engine\db\ActiveRecord {
 
     public $text;
 
-    public function getForm() {
-        Yii::import('zii.widgets.jui.CJuiDatePicker');
-        Yii::import('ext.bootstrap.selectinput.SelectInput');
-        Yii::import('ext.taginput.TagInput');
-        Yii::import('ext.tinymce.TinymceArea');
-        Yii::import('ext.bootstrap.fileinput.FileInput');
-        return array(
-            'attributes' => array(
-                'id' => __CLASS__,
-                'class' => 'form-horizontal',
-                'enctype' => 'multipart/form-data',
-            ),
-            'showErrorSummary' => true,
-            'elements' => array(
-                'content' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_CONTENT'),
-                    'elements' => array(
-                        'title' => array(
-                            'type' => 'text',
-                            'id' => 'title'
-                        ),
-                        'seo_alias' => array(
-                            'type' => 'text',
-                            'id' => 'alias',
-                            'visible' => (Yii::$app->settings->get('app', 'translate_object_url')) ? false : true
-                        ),
-                        'short_text' => array(
-                            'type' => 'TinymceArea',
-                        ),
-                        'full_text' => array(
-                            'type' => 'TinymceArea',
-                        ),
-                        'tags' => array(
-                            'type' => 'TagInput',
-                            'options' => array(
-                            //'defaultText'=>'lala'
-                            )
-                        ),
-                    ),
-                ),
-                'additional' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_ADDITIONALLY'),
-                    'elements' => array(
-                        'switch' => array(
-                            'type' => 'dropdownlist',
-                            'items' => array(0 => Yii::t('app', 'OFF', 0), 1 => Yii::t('app', 'ON', 0))
-                        ),
-                        'date_create' => array(
-                            'type' => 'CJuiDatePicker',
-                            'options' => array(
-                                'dateFormat' => 'yy-mm-dd ' . date('H:i:s'),
-                            ),
-                            'htmlOptions' => array(
-                                'class' => 'form-control',
-                                'style' => 'width:150px;',
-                                'value' => ($this->isNewRecord) ? date('Y-m-d H:i:s') : $this->date_create,
-                            )
-                        ),
-                    ),
-                ),
-            ),
-            'buttons' => array(
-                'submit' => array(
-                    'type' => 'submit',
-                    'class' => 'btn btn-success',
-                    'label' => $this->isNewRecord ? Yii::t('app', 'CREATE', 0) : Yii::t('app', 'SAVE')
-                )
-            )
-        );
-    }
-
-    public function getGridColumns() {
-        return array(
-            array(
-                'name' => 'title',
-                'type' => 'raw',
-                'htmlOptions' => array('class' => 'text-left'),
-                'value' => 'Html::link(Html::encode($data->title),"/forum/topic/1/$data->seo_alias", array("target"=>"_blank"))',
-            ),
-            array(
-                'name' => 'user_id',
-                'type' => 'raw',
-                'value' => 'CMS::userLink($data->user)',
-                'htmlOptions' => array('class' => 'text-center')
-            ),
-            array(
-                'name' => 'views',
-                'value' => '$data->views',
-                'htmlOptions' => array('class' => 'text-center')
-            ),
-            array(
-                'name' => 'rating',
-                'type' => 'raw',
-                'htmlOptions' => array('class' => 'text-center'),
-                'value' => 'CMS::vote_graphic($data->score,$data->rating)',
-            ),
-            array(
-                'name' => 'date_create',
-                'value' => 'CMS::date($data->date_create)',
-            ),
-            array(
-                'name' => 'date_update',
-                'value' => 'CMS::date($data->date_update)',
-            ),
-            'DEFAULT_CONTROL' => array(
-                'class' => 'ButtonColumn',
-                'template' => '{switch}{update}{delete}',
-            ),
-            'DEFAULT_COLUMNS' => array(
-                array('class' => 'CheckBoxColumn'),
-                array('class' => 'ext.sortable.SortableColumn')
-            ),
-        );
-    }
-
-
 
     /**
      * @return string the associated database table name
@@ -167,28 +49,44 @@ class Topics extends \panix\engine\db\ActiveRecord {
      * @return array validation rules for model attributes.
      */
     public function rules() {
-        return array(
-            array('title, text', 'type', 'type' => 'string'),
-            array('title, text', 'length', 'min' => 3),
-            array('title, text', 'required'),
-            array('is_close', 'boolean'),
-            array('date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-            array('title', 'length', 'max' => 140),
-            array('id, user_id, title, date_update, date_create', 'safe', 'on' => 'search'),
-        );
+        return [
+            [['title', 'text'], 'string', 'min' => 3],
+            [['title', 'text'], 'required'],
+            ['is_close', 'boolean'],
+           //['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+            ['title', 'string', 'max' => 140],
+            [['id', 'user_id', 'title', 'date_update', 'date_create'], 'safe'],
+        ];
     }
-
+    public function getCategory() {
+        return $this->hasOne(Categories::className(), ['id' => 'category_id']);
+    }
+    
+    public function getUser() {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+    
+    public function getPostsCount() {
+        return $this->hasMany(Posts::className(), ['topic_id' => 'id'])->count();
+    }
+    
+    public function getPostsDesc() {
+        return $this->hasMany(Posts::className(), ['topic_id' => 'id'])->orderBy('id DESC');
+    }
+    public function getPosts() {
+        return $this->hasMany(Posts::className(), ['topic_id' => 'id'])->orderBy('id ASC');
+    }
     /**
      * @return array relational rules.
      */
     public function relations() {
         return array(
-            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+            //'user' => array(self::BELONGS_TO, 'User', 'user_id'),
             //  'topicsCount' => array(self::STAT, 'ForumTopics', 'id'),
-            'postsCount' => array(self::STAT, 'ForumPosts', 'topic_id'),
-            'posts' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order' => '`posts`.`id` ASC'),
-            'postsDesc' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order' => '`postsDesc`.`id` DESC'),
-            'category' => array(self::BELONGS_TO, 'ForumCategories', 'category_id'),
+           // 'postsCount' => array(self::STAT, 'ForumPosts', 'topic_id'),
+          //  'posts' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order' => '`posts`.`id` ASC'),
+            //'postsDesc' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order' => '`postsDesc`.`id` DESC'),
+           // 'category' => array(self::BELONGS_TO, 'ForumCategories', 'category_id'),
             'postLast' => array(self::BELONGS_TO, 'ForumPosts', 'last_post_id'),
                 //'posts' => array(self::HAS_MANY, 'ForumPosts', 'topic_id', 'order'=>'`posts`.`date_create` DESC'),
                 //'parent' => array(self::BELONGS_TO, 'ForumTopics', 'parent_id'),

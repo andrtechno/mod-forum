@@ -1,15 +1,15 @@
 
 
 <?php
-if (!Yii::app()->user->isGuest) {
+if (!Yii::$app->user->isGuest) {
 
 
 
 
-    if (Yii::app()->user->hasFlash('success')) {
+  //  if (Yii::$app->user->hasFlash('success')) {
 
-        Yii::app()->tpl->alert('success', Yii::app()->user->getFlash('success'));
-    }
+  //      Yii::$app->tpl->alert('success', Yii::$app->user->getFlash('success'));
+   // }
 
     $form = $this->beginWidget('CActiveForm', array(
         'id' => 'form-editpost-'.$model->id,

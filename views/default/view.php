@@ -1,4 +1,9 @@
 <?php
+use panix\engine\Html;
+use panix\engine\CMS;
+?>
+
+<?php
 $subCategories = $model->children()->all();
 ?>
 <div class="forum">
@@ -77,14 +82,14 @@ $subCategories = $model->children()->all();
                                         <span class="label label-success"><?= Yii::t('forum/default', 'FIXED'); ?></span>
                                     <?php } ?>
                                     <?php if ($data->user_id == Yii::$app->user->id) { ?>
-                                        <?= Html::link('<b>' . $data->title . '</b>', $data->getUrl()) ?>
+                                        <?= Html::a('<b>' . $data->title . '</b>', $data->getUrl()) ?>
                                     <?php } else { ?>
 
-                                        <?= Html::link($data->title, $data->getUrl()) ?>
+                                        <?= Html::a($data->title, $data->getUrl()) ?>
                                     <?php } ?>
                                     <br/>
                                     <?php if ($data->user) { ?>
-                                        Автор: <?= Html::link($data->user->login, $data->user->getProfileUrl()) ?>,
+                                        Автор: <?= Html::a($data->user->username, $data->user->getProfileUrl()) ?>,
                                     <?php } else { ?>
                                         <?= Yii::t('app', Yii::$app->user->guestName); ?>,
                                     <?php } ?>
@@ -92,6 +97,7 @@ $subCategories = $model->children()->all();
 
                                     <?php
                                     $per_page = (int) Yii::$app->settings->get('forum', 'pagenum');
+                                    $per_page = 10;
                                     //узнаем общее количество страниц и заполняем массив со ссылками
                                     $num_pages = ceil($data->postsCount / $per_page);
                                     if ($data->postsCount >= $per_page) {
@@ -118,7 +124,7 @@ $subCategories = $model->children()->all();
 
                                     <?php if ($data->postsCount > 0) { ?>
                                         <?php if ($data->postsDesc[0]->user) { ?>
-                                            <?= Html::link($data->postsDesc[0]->user->login, $data->postsDesc[0]->user->getProfileUrl()) ?>
+                                            <?= Html::a($data->postsDesc[0]->user->username, $data->postsDesc[0]->user->getProfileUrl()) ?>
                                         <?php } else { ?>
                                             ГОСТЬ!
                                         <?php } ?>

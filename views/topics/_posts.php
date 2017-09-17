@@ -1,15 +1,19 @@
+<?php
+use panix\engine\CMS;
+use panix\engine\Html;
+?>
 <div class="panel panel-default forum-post" name="post-<?= ($index + 1) ?>" id="post-<?= ($index + 1) ?>">
     <div class="panel-heading clearfix">
         <div class="pull-left">
-            <?= ($data->user) ? $data->user->login : Yii::t('app', Yii::app()->user->guestName); ?>
+            <?= ($model->user) ? $model->user->username : Yii::t('app', Yii::$app->user->guestName); ?>
         </div>
         <div class="pull-right">
-            <?php if (Yii::app()->user->isSuperuser) { ?>
-                <?= CMS::ip($data->ip_create) ?>
+            <?php if (Yii::$app->user->can('admin')) { ?>
+                <?= CMS::ip('195.78.247.104');//$model->ip_create ?>
             <?php } ?>
             <input type="checkbox" name="ads" class="" />
-            <?= Html::link('#' . ($index + 1), '#post-' . ($index + 1)); ?>
-            <?= Html::link(Html::tag('i', array('class' => 'icon-share'), '', true), '', array('class' => 'btn btn-link', 'style' => 'padding:0;')); ?>
+            <?= Html::a('#' . ($index + 1), '#post-' . ($index + 1)); ?>
+            <?= Html::a(Html::tag('i', '', array('class' => 'icon-share')), '', array('class' => 'btn btn-link', 'style' => 'padding:0;')); ?>
         </div>
     </div>
     <div class="panel-body">
@@ -18,27 +22,27 @@
 
                 <div style="margin:0 auto;">
 
-                    <?php if ($data->user) { ?>
-                        <?php echo Html::image($data->user->getAvatarUrl("100x100"), $data->user->username, array('class' => 'img-thumbnail')) ?>
+                    <?php if ($model->user) { ?>
+                        <?php //echo Html::img($model->user->getAvatarUrl("100x100"), $model->user->username, array('class' => 'img-thumbnail')) ?>
 
                     <?php } else { ?>
 
-                        <?php echo Html::image(Yii::app()->user->getAvatarUrl("100x100", true), Yii::app()->user->guestName, array('class' => 'img-thumbnail')) ?>
+                        <?php //echo Html::img(Yii::$app->user->getAvatarUrl("100x100", true), Yii::$app->user->guestName, array('class' => 'img-thumbnail')) ?>
 
 
                     <?php } ?>
 
                 </div>
-                <?php if ($data->user) { ?>
-                    <div><?= $data->user->rolesList[0]->description ?></div>
-                    <div><?= Yii::t('forum/default', 'MESSAGES', array('{num}' => $data->user->forum_posts_count)) ?></div>    
+                <?php if ($model->user) { ?>
+                    <div>zzzzzzzzzzzzzzzzzzzzzz</div>
+                    <div><?= Yii::t('forum/default', 'MESSAGES', array('{num}' => $model->user->forum_posts_count)) ?></div>    
                 <?php } ?>
 
             </div>
             <div class="col-md-10 col-sm-9 col-xs-8">
-                <div class="help-block"><?= Yii::t('forum/default', 'POST_SENDDATE'); ?> <?= CMS::date($data->date_create, true, true); ?></div>
-                <div id="post-edit-ajax-<?= $data->id; ?>">
-                    <?php $this->renderPartial('_posts_content', array('data' => $data)); ?>
+                <div class="help-block"><?= Yii::t('forum/default', 'POST_SENDDATE'); ?> <?= CMS::date($model->date_create, true, true); ?></div>
+                <div id="post-edit-ajax-<?= $model->id; ?>">
+                    <?php echo $this->render('_posts_content', array('model' => $model)); ?>
 
 
                 </div>
@@ -51,30 +55,30 @@
 
         <a class="btn btn-xs btn-link" href="#">Скрыть</a>
         <a class="btn btn-xs btn-link" href="#">Жалоба</a>
-        <?php if (!Yii::app()->user->isGuest) { ?>
+        <?php if (!Yii::$app->user->isGuest) { ?>
             <a href="#" class="quote btn btn-xs btn-default">Цитата each</a>
-            <a href="/forum/quote?post_id=<?= $data->id ?>" class="quote btn btn-xs btn-default">Ответить</a>
+            <a href="/forum/quote?post_id=<?= $model->id ?>" class="quote btn btn-xs btn-default">Ответить</a>
         <?php } ?>
 
-        <?php if ($data->isEditPost()) { ?>
+        <?php if ($model->isEditPost()) { ?>
 
             <?php
-            echo CHtml::ajaxLink('<i class="icon-edit"></i> Изменить', array('/forum/topics/editpost', 'id' => $data->id), array(
+           /* echo Html::ajaxLink('<i class="icon-edit"></i> Изменить', array('/forum/topics/editpost', 'id' => $model->id), array(
                 'type' => 'GET',
                 'data' => array(),
                 'success' => 'js:function(data){
-                    $("#post-edit-ajax-' . $data->id . '").html(data);
+                    $("#post-edit-ajax-' . $model->id . '").html(data);
                     common.removeLoader();
                 }',
                 'beforeSend' => 'js:function(){
                     common.addLoader();
                 }'
-                    ), array('class' => 'btn btn-xs btn-link'));
+                    ), array('class' => 'btn btn-xs btn-link'));*/
             ?>
 
 
         <?php } ?>
-        <?php if (Yii::app()->settings->get('forum', 'enable_post_delete')) { ?>
+        <?php if (Yii::$app->settings->get('forum', 'enable_post_delete')) { ?>
             <a class="btn btn-xs btn-link" href="#"><i class="icon-delete"></i> <?= Yii::t('app', 'DELETE') ?></a>
         <?php } ?>
 

@@ -1,180 +1,12 @@
 <?php
 namespace panix\mod\forum\models;
+
+use Yii;
+use panix\mod\user\models\User;
 class Posts extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'forum';
     const route = '/forum/admin/default';
-
-    public function getForm() {
-        Yii::import('zii.widgets.jui.CJuiDatePicker');
-        Yii::import('ext.bootstrap.selectinput.SelectInput');
-        Yii::import('ext.taginput.TagInput');
-        Yii::import('ext.tinymce.TinymceArea');
-        Yii::import('ext.bootstrap.fileinput.FileInput');
-        return array(
-            'attributes' => array(
-                'id' => __CLASS__,
-                'class' => 'form-horizontal',
-                'enctype' => 'multipart/form-data',
-            ),
-            'showErrorSummary' => true,
-            'elements' => array(
-                'content' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_CONTENT'),
-                    'elements' => array(
-                        'title' => array(
-                            'type' => 'text',
-                            'id' => 'title'
-                        ),
-                        'seo_alias' => array(
-                            'type' => 'text',
-                            'id' => 'alias',
-                            'visible' => (Yii::app()->settings->get('app', 'translate_object_url')) ? false : true
-                        ),
-                        'short_text' => array(
-                            'type' => 'TinymceArea',
-                        ),
-                        'full_text' => array(
-                            'type' => 'TinymceArea',
-                        ),
-                        'tags' => array(
-                            'type' => 'TagInput',
-                            'options' => array(
-                            //'defaultText'=>'lala'
-                            )
-                        ),
-                    ),
-                ),
-                'additional' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_ADDITIONALLY'),
-                    'elements' => array(
-                        'switch' => array(
-                            'type' => 'dropdownlist',
-                            'items' => array(0 => Yii::t('app', 'OFF', 0), 1 => Yii::t('app', 'ON', 0))
-                        ),
-                        'date_create' => array(
-                            'type' => 'CJuiDatePicker',
-                            'options' => array(
-                                'dateFormat' => 'yy-mm-dd ' . date('H:i:s'),
-                            ),
-                            'htmlOptions' => array(
-                                'class' => 'form-control',
-                                'style' => 'width:150px;',
-                                'value' => ($this->isNewRecord) ? date('Y-m-d H:i:s') : $this->date_create,
-                            )
-                        ),
-                    ),
-                ),
-                'kartinka' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_IMG2'),
-                    'elements' => array(
-                        'files' => array(
-                            'type' => 'FileInput',
-                            'htmlOptions' => array('multiple' => true),
-                            'options' => array(
-                                'showUpload' => false,
-                                'showPreview' => true,
-                                //  'maxFileCount'=> 2,
-                                //  'validateInitialCount'=> true,
-                                'uploadAsync' => false,
-                                'maxFileSize' => 35000,
-                                // 'showClose' => false,
-                                //'showCaption' => true,
-                                // 'browseLabel' => '',
-                                //'removeLabel' => '',
-                                'overwriteInitial' => false,
-                                'elErrorContainer' => '#kv-avatar-errors',
-                                'msgErrorClass' => 'alert alert-danger',
-                                'initialPreview' => $this->initialPreview(),
-                                //  'defaultPreviewContent' => '<img src="/uploads/'.$this->filesList[0]['filename'].'" alt="Your Avatar">',
-                                //'layoutTemplates' => "{main2: '{preview}  {remove} {browse}'}",
-                                'allowedFileExtensions' => array("jpg", "png", "gif"),
-                                'initialPreviewAsData' => true, // identify if you are sending preview data only and not the raw markup
-                                'initialPreviewFileType' => 'image', // image is the default and can be overridden in config below
-                                'initialPreviewConfig' => array(
-                                    array('caption' => "People-1.jpg", 'size' => 576237, 'width' => "120px", 'url' => "/admin/news/default/deleteFile", 'key' => 1),
-                                    array('caption' => "People-2.jpg", 'size' => 932882, 'width' => "120px", 'url' => "/admin/news/default/deleteFile", 'key' => 2),
-                                ),
-                                /*      'uploadExtraData'=>"js:function() {  // callback example
-                                  var out = {}, key, i = 0;
-                                  $('.kv-input:visible').each(function() {
-                                  var el = $(this);
-                                  key = el.hasClass('kv-new') ? 'new_' + i : 'init_' + i;
-                                  out[key] = el.val();
-                                  i++;
-                                  });
-                                  return out;
-                                  }", */
-                                'uploadExtraData' => array(
-                                    'img_key' => "1000",
-                                    'img_keywords' => "happy, places",
-                                ),
-                                'previewSettings' => array(
-                                    'image' => array('width' => "120px", 'height' => "120px"),
-                                )
-                            ),
-                            'afterContent' => '<div id="kv-avatar-errors" style="display:none"></div>'
-                        ),
-                    ),
-                ),
-            ),
-            'buttons' => array(
-                'submit' => array(
-                    'type' => 'submit',
-                    'class' => 'btn btn-success',
-                    'label' => $this->isNewRecord ? Yii::t('app', 'CREATE', 0) : Yii::t('app', 'SAVE')
-                )
-            )
-        );
-    }
-
-    public function getGridColumns() {
-        return array(
-            array(
-                'name' => 'title',
-                'type' => 'raw',
-                'htmlOptions' => array('class' => 'text-left'),
-                'value' => 'Html::link(Html::encode($data->title),"/news/$data->seo_alias", array("target"=>"_blank"))',
-            ),
-            array(
-                'name' => 'user_id',
-                'type' => 'raw',
-                'value' => 'CMS::userLink($data->user)',
-                'htmlOptions' => array('class' => 'text-center')
-            ),
-            array(
-                'name' => 'views',
-                'value' => '$data->views',
-                'htmlOptions' => array('class' => 'text-center')
-            ),
-            array(
-                'name' => 'rating',
-                'type' => 'raw',
-                'htmlOptions' => array('class' => 'text-center'),
-                'value' => 'CMS::vote_graphic($data->score,$data->rating)',
-            ),
-            array(
-                'name' => 'date_create',
-                'value' => 'CMS::date($data->date_create)',
-            ),
-            array(
-                'name' => 'date_update',
-                'value' => 'CMS::date($data->date_update)',
-            ),
-            'DEFAULT_CONTROL' => array(
-                'class' => 'ButtonColumn',
-                'template' => '{switch}{update}{delete}',
-            ),
-            'DEFAULT_COLUMNS' => array(
-                array('class' => 'CheckBoxColumn'),
-                array('class' => 'ext.sortable.SortableColumn')
-            ),
-        );
-    }
-
 
 
     /**
@@ -193,7 +25,7 @@ class Posts extends \panix\engine\db\ActiveRecord {
     }
 
     public function getUrl() {
-        return Yii::app()->createUrl('/news/default/view', array('seo_alias' => $this->seo_alias));
+        return ['/news/default/view', 'seo_alias' => $this->seo_alias];
     }
 
     /**
@@ -211,40 +43,47 @@ class Posts extends \panix\engine\db\ActiveRecord {
         return $this;
     }
 
-    public function afterSave() {
+    public function afterSave($insert, $changedAttributes) {
 
 
-        if (!Yii::app()->user->isGuest) {
-            $user = User::model()->findByPk($this->user_id);
-            $user->saveCounters(array('forum_posts_count' => 1));
+        if (!Yii::$app->user->isGuest) {
+            $user = User::findOne($this->user_id);
+           $user->updateCounters(['forum_posts_count' => 1]);
         }
 
 
-        return parent::afterSave();
+        return parent::afterSave($insert, $changedAttributes);
     }
 
     /**
      * @return array validation rules for model attributes.
      */
     public function rules() {
-        return array(
-            array('text, edit_reason', 'type', 'type' => 'string'),
-            array('text', 'length', 'min' => 3),
-            array('text, topic_id, user_id', 'required'),
-            array('date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-            array('text', 'length', 'max' => 255),
-            array('edit_user_id, user_id', 'numerical', 'integerOnly' => true),
-            array('id, user_id, edit_user_id, edit_reason, edit_datetime, seo_alias, text, full_text, date_update, date_create', 'safe', 'on' => 'search'),
-        );
+        return [
+            [['text', 'edit_reason'], 'string'],
+            ['text', 'string', 'min' => 3],
+            [['text', 'topic_id', 'user_id'], 'required'],
+            //['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+            ['text', 'string', 'max' => 255],
+            //['edit_user_id, user_id', 'numerical', 'integerOnly' => true],
+          //  ['id, user_id, edit_user_id, edit_reason, edit_datetime, seo_alias, text, full_text, date_update, date_create', 'safe'],
+       ];
     }
-
+    
+    public function getUser() {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+    
+     public function getUserEdit() {
+        return $this->hasOne(User::className(), ['id' => 'edit_user_id']);
+    }
     /**
      * @return array relational rules.
      */
     public function relations() {
         return array(
-            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-            'userEdit' => array(self::BELONGS_TO, 'User', 'edit_user_id'),
+           // 'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+          //  'userEdit' => array(self::BELONGS_TO, 'User', 'edit_user_id'),
             'topic' => array(self::BELONGS_TO, 'ForumTopics', 'topic_id'),
         );
     }
@@ -252,7 +91,7 @@ class Posts extends \panix\engine\db\ActiveRecord {
     /**
      * @return array
      */
-    public function behaviors() {
+    public function behaviors2() {
         $a = array();
         $a['timeline'] = array(
             'class' => 'app.behaviors.TimelineBehavior',
@@ -289,35 +128,8 @@ class Posts extends \panix\engine\db\ActiveRecord {
         return $sort;
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions. Used in admin search.
-     * @return ActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    public function search() {
-        $criteria = new CDbCriteria;
-
-        $criteria->with = array('user', 'userEdit');
-
-        $criteria->compare('t.id', $this->id);
-        $criteria->compare('user.username', $this->user_id, true);
-        $criteria->compare('userEdit.username', $this->edit_user_id, true);
-        $criteria->compare('translate.title', $this->title, true);
-        $criteria->compare('t.seo_alias', $this->seo_alias, true);
-        $criteria->compare('translate.full_text', $this->full_text, true);
-        $criteria->compare('translate.short_text', $this->short_text, true);
-        $criteria->compare('t.date_create', $this->date_create, true);
-        $criteria->compare('t.date_update', $this->date_update, true);
-        $criteria->compare('t.switch', $this->switch);
-
-        return new ActiveDataProvider($this, array(
-            'criteria' => $criteria,
-            'sort' => self::getCSort(),
-            'pagination' => array('pageVar' => 'page'/* ,'route'=>'/news' */)
-        ));
-    }
-
     public function isEditPost() {
-        if (Yii::app()->user->isSuperuser) {
+        if (Yii::$app->user->can('admin')) {
             return true;
         } else {
             if ($this->user_id == Yii::app()->user->id) {

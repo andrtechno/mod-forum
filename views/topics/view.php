@@ -1,5 +1,10 @@
+<?php
+use panix\engine\Html;
+use panix\engine\CMS;
+?>
+
 <h1><?= $model->title ?></h1>
-<small>Автор <?= $model->user->login ?>, <?= CMS::date($model->date_create, true, true) ?></small>
+<small>Автор <?= $model->user->username ?>, <?= CMS::date($model->date_create, true, true) ?></small>
 <div class="forum">
     <div class="form-group pull-right">
         <div class="dropdown">
@@ -30,7 +35,7 @@
         <div class="panel-heading">
             <?php
             if (count($model->posts) >= 1) {
-                echo Yii::t('forum/default', 'POST_MESSAGES_NUM', array('{count}' => count($model->posts) - 1));
+                echo Yii::t('forum/default', 'POST_MESSAGES_NUM', array('count' => count($model->posts) - 1));
             } elseif (count($model->posts) <= 1) {
                 echo Yii::t('forum/default', 'POST_MESSAGES_NO');
             } else {
@@ -43,7 +48,13 @@
 
 
             <?php
-            $this->widget('ListView', array(
+           
+                    echo yii\widgets\ListView::widget([
+    'dataProvider' => $providerPosts,
+    'itemView' => '_posts',
+]);
+            
+           /* $this->widget('ListView', array(
                 'dataProvider' => $providerPosts,
                 'id' => 'topic-list',
                 'ajaxUpdate' => true,
@@ -54,7 +65,7 @@
                 'pager' => array(
                     'header' => '',
                 ),
-            ));
+            ));*/
             ?>
 
 
@@ -62,7 +73,7 @@
     </div>
     <br/><br/>
 
-    <?php if (!Yii::app()->user->isGuest) { ?>
+    <?php if (!Yii::$app->user->isGuest) { ?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 Ответить
@@ -74,7 +85,7 @@
 
                 <div id="ajax-addreply">
                     <?php
-                    $this->renderPartial('_form_addreply', array('model' => $model, 'postModel' => array()));
+                    echo $this->render('_form_addreply', array('model' => $model, 'postModel' => array()));
                     ?>
                 </div>
             </div>
@@ -88,36 +99,37 @@
         <div class="">Share block</div>
 
         <?php
-        $session = Session::model()->with('user')->findAllByAttributes(array('current_url' => Yii::app()->request->url));
+        $session = 0;
+       // $session = Session::model()->with('user')->findAllByAttributes(array('current_url' => Yii::$app->request->url));
         ?>
 
-        <h4><?= Yii::t('forum/default', ($this->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', array('{num}' => count($session))); ?></h4>
+        <h4><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', array('num' => count($session))); ?></h4>
         <?php
         $t = 0;
         $guests = 0;
         $bots = 0;
         $users = 0;
         $readNames = array();
-        foreach ($session as $val) {
+      /*  foreach ($session as $val) {
 
             if ($val->user_type == 2 || $val->user_type == 3) {
                 $users++;
 
                 if ($val->user) {
 
-                    $arrayAuthRoleItems = Yii::app()->authManager->getAuthItems(2, $val->user->id);
+                    $arrayAuthRoleItems = Yii::$app->authManager->getAuthItems(2, $val->user->id);
                     $roles = array_keys($arrayAuthRoleItems);
 
 
                     foreach ($roles as $role) {
                         if (in_array($role, array('Admin', 'Moderator'))) {
-                            $login = Html::tag('b', array('class'=>'text-danger'), $val->user->login, true);
+                            $login = Html::tag('b', array('class'=>'text-danger'), $val->user->username, true);
                         } else {
-                            $login = $val->user->login;
+                            $login = $val->user->username;
                         }
                     }
 
-                    $readNames[] = Html::link($login, $val->user->getProfileUrl());
+                    $readNames[] = Html::a($login, $val->user->getProfileUrl());
                 }
             } elseif ($val->user_type == 1) {
                 $bots++;
@@ -127,7 +139,7 @@
             }
 
             $t++;
-        }
+        }*/
         ?>
         <div><?= $users ?> пользователей, <?= $guests ?> гостей, N/A анонимных</div>
         <br/>

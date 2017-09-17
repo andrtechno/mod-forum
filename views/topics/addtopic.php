@@ -1,41 +1,33 @@
-<h2><?= Yii::t('forum/default', 'TITLE_ADD_TOPIC', array('{name}' => $category->name)) ?></h2>
+<?php
+
+use yii\bootstrap\ActiveForm;
+use panix\engine\Html;
+?>
+
+
+<h2><?= Yii::t('forum/default', 'TITLE_ADD_TOPIC', array('name' => $category->name)) ?></h2>
 
 
 <?php
-$form = $this->beginWidget('CActiveForm', array(
-    'id' => 'addtopic-form',
-    //'action' => array('/forum/addcat/1'),
-    'enableAjaxValidation' => false, // Disabled to prevent ajax calls for every field update
-    'enableClientValidation' => true,
-    'clientOptions' => array(
-        'validateOnType' => true,
-        'validateOnSubmit' => true,
-        'validateOnChange' => true,
-        'errorCssClass' => 'has-error',
-        'successCssClass' => 'has-success',
-    ),
-    'htmlOptions' => array('class' => 'addtopic')
-        ));
+$form = ActiveForm::begin([
+            'options' => [
+                'class' => 'form-horizontal',
+            ]
+        ]);
 ?>
 <div class="row">
     <div class="col-md-9">
-
-
-        <?php
-        echo $form->errorSummary($model, '<i class="fa fa-warning fa-3x"></i>', null, array('class' => 'errorSummary alert alert-danger'));
-        ?>
         <div class="form-group">
-            <?= $form->labelEx($model, 'title', array('class' => 'info-title')); ?>
-            <?= $form->textField($model, 'title', array('class' => 'form-control')); ?>
-            <?= $form->error($model, 'title'); ?>
+            <?php echo $form->field($model, 'title'); ?>
+
         </div>
         <div class="form-group">
-            <?= $form->labelEx($model, 'text', array('class' => 'info-title')); ?>
-            <?= $form->textArea($model, 'text', array('class' => 'form-control', 'rows' => 15)); ?>
-            <?= $form->error($model, 'text'); ?>
+
+            <?php echo $form->field($model, 'text')->textarea(); ?>
+
         </div>
         <div class="form-group text-center">
-            <?= Html::submitButton(Yii::t('forum/default', 'ADD_TOPIC'), array('class' => 'btn btn-primary')); ?>
+            <?= Html::submitButton(Yii::t('forum/default', 'ADD_TOPIC'), ['class' => 'btn btn-primary']); ?>
         </div>
 
     </div>
@@ -52,13 +44,13 @@ $form = $this->beginWidget('CActiveForm', array(
                     <p class="help-block">Example block-level help text here.</p>
                 </div>
                 <div class="">
-                       <?= $form->checkbox($model, 'is_close', array()); ?>
-                    <?= $form->label($model, 'is_close', array('class' => '')); ?>
-                 
+                    <?php //echo $form->field($model, 'is_close')->checkbox(); ?>
+
+
 
                 </div>
             </div>
         </div>
     </div>
 </div>
-<?php $this->endWidget(); ?>
+<?php ActiveForm::end(); ?>

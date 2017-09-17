@@ -1,45 +1,34 @@
 <?php
-if (!Yii::app()->user->isGuest) {
+use panix\mod\forum\models\Posts;
+use yii\widgets\ActiveForm;
+use panix\engine\Html;
+if (!Yii::$app->user->isGuest) {
 
 
 
 
-    if (Yii::app()->user->hasFlash('success')) {
+    //if (Yii::$app->user->hasFlash('success')) {
 
-        Yii::app()->tpl->alert('success', Yii::app()->user->getFlash('success'));
-    }
-    $postModel = new ForumPosts;
+   //     Yii::$app->tpl->alert('success', Yii::$app->user->getFlash('success'));
+   // }
+    $postModel = new Posts;
 
-    $form = $this->beginWidget('CActiveForm', array(
-        'id' => 'addreply',
-        'action' => array('/forum/topic/addreply'),
-        'enableAjaxValidation' => false, // Disabled to prevent ajax calls for every field update
-        'enableClientValidation' => true,
-        'clientOptions' => array(
-            'validateOnSubmit' => true,
-            'validateOnChange' => true,
-            'errorCssClass' => 'has-error',
-            'successCssClass' => 'has-success',
-        ),
-        'htmlOptions' => array('class' => 'addreply')
-    ));
+$form = ActiveForm::begin([
+            'options' => [
+                'class' => 'form-horizontal',
+            ]
+        ]);
+
 
     ?>
-    <?= $form->hiddenField($postModel, 'topic_id', array('value' => $model->id)); ?>
-    <?= $form->hiddenField($postModel, 'user_id', array('value' => Yii::app()->user->id)); ?>
+    <?= $form->field($postModel, 'topic_id')->hiddenInput(['value'=> $model->id])->label(false); ?>
+    <?= $form->field($postModel, 'user_id')->hiddenInput(['value' => Yii::$app->user->id])->label(false); ?>
 
     <div class="form-group">
-        <?= $form->labelEx($postModel, 'text', array('class' => 'label-control')); ?>
 
-        <?php
-        $this->widget('mod.forum.components.tinymce.TinymceArea', array(
-            'model' => $postModel,
-            'attribute' => 'text',
-                 'selector'=>'#ForumPosts_text'
-        ));
-        ?>
-        <?php //echo $form->textArea($postModel, 'text', array('class' => 'form-control')); ?>
-        <?= $form->error($postModel, 'text'); ?>
+        <?php echo $form->field($postModel, 'text')->textarea(); ?>
+
+
     </div>
     <div class="form-group">
 
@@ -47,7 +36,7 @@ if (!Yii::app()->user->isGuest) {
         <?= Html::submitButton('Расширенная форма', array('class' => 'btn btn-default')); ?>
 
     </div>
-    <?php $this->endWidget(); ?>
+<?php ActiveForm::end(); ?>
 <?php } ?>
 <script>
     $(function () {

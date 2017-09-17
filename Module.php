@@ -21,8 +21,9 @@ class Module extends \panix\engine\WebModule {
         'forum/quote/*' => 'forum/default/quote',
 
         'forum/topic/addreply' => 'forum/topics/addreply',
-        'forum/topic/<id>/*' => 'forum/topics/view',
+        
         'forum/topic/<id>' => 'forum/topics/view',
+        'forum/topic/<id>/*' => 'forum/topics/view',
         'forum/addcat/<parent_id>' => 'forum/default/addCat',
                 'forum/category/<id>' => 'forum/default/view',
         'forum/editpost/<id>' => 'forum/topics/editpost',

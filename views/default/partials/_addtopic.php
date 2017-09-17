@@ -17,7 +17,7 @@ use panix\engine\Html;
             </span>
         <?php } ?>
         <?php if ($model->checkAddTopic()) { ?>
-            <?= Html::a('<i class="icon-add"></i> Новая тема', ['/forum/topics/addTopic', 'id' => $model->id], array('class' => 'btn btn-success')) ?>
+            <?= Html::a('<i class="icon-add"></i> Новая тема', ['/forum/topics/add', 'id' => $model->id], array('class' => 'btn btn-success')) ?>
         <?php } ?>
 
     </div>

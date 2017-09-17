@@ -21,166 +21,6 @@ class Categories extends \panix\engine\db\ActiveRecord {
         }
     }
 
-    public function getForm() {
-        Yii::import('zii.widgets.jui.CJuiDatePicker');
-        Yii::import('ext.bootstrap.selectinput.SelectInput');
-        Yii::import('ext.taginput.TagInput');
-        Yii::import('ext.tinymce.TinymceArea');
-        Yii::import('ext.bootstrap.fileinput.FileInput');
-        return array(
-            'attributes' => array(
-                'id' => __CLASS__,
-                'class' => 'form-horizontal',
-                'enctype' => 'multipart/form-data',
-            ),
-            'showErrorSummary' => true,
-            'elements' => array(
-                'content' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_CONTENT'),
-                    'elements' => array(
-                        'name' => array(
-                            'type' => 'text',
-                            'id' => 'title'
-                        ),
-                        'seo_alias' => array(
-                            'type' => 'text',
-                            'id' => 'alias',
-                            'visible' => (Yii::$app->settings->get('app', 'translate_object_url')) ? false : true
-                        ),
-                        'short_text' => array(
-                            'type' => 'TinymceArea',
-                        ),
-                        'full_text' => array(
-                            'type' => 'TinymceArea',
-                        ),
-                        'tags' => array(
-                            'type' => 'TagInput',
-                            'options' => array(
-                            //'defaultText'=>'lala'
-                            )
-                        ),
-                    ),
-                ),
-                'additional' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_ADDITIONALLY'),
-                    'elements' => array(
-                        'switch' => array(
-                            'type' => 'dropdownlist',
-                            'items' => array(0 => Yii::t('app', 'OFF', 0), 1 => Yii::t('app', 'ON', 0))
-                        ),
-                        'date_create' => array(
-                            'type' => 'CJuiDatePicker',
-                            'options' => array(
-                                'dateFormat' => 'yy-mm-dd ' . date('H:i:s'),
-                            ),
-                            'htmlOptions' => array(
-                                'class' => 'form-control',
-                                'style' => 'width:150px;',
-                                'value' => ($this->isNewRecord) ? date('Y-m-d H:i:s') : $this->date_create,
-                            )
-                        ),
-                    ),
-                ),
-                'kartinka' => array(
-                    'type' => 'form',
-                    'title' => self::t('TAB_IMG2'),
-                    'elements' => array(
-                        'files' => array(
-                            'type' => 'FileInput',
-                            'htmlOptions' => array('multiple' => true),
-                            'options' => array(
-                                'showUpload' => false,
-                                'showPreview' => true,
-                                //  'maxFileCount'=> 2,
-                                //  'validateInitialCount'=> true,
-                                'uploadAsync' => false,
-                                'maxFileSize' => 35000,
-                                // 'showClose' => false,
-                                //'showCaption' => true,
-                                // 'browseLabel' => '',
-                                //'removeLabel' => '',
-                                'overwriteInitial' => false,
-                                'elErrorContainer' => '#kv-avatar-errors',
-                                'msgErrorClass' => 'alert alert-danger',
-                              //  'initialPreview' => $this->initialPreview(),
-                                //  'defaultPreviewContent' => '<img src="/uploads/'.$this->filesList[0]['filename'].'" alt="Your Avatar">',
-                                //'layoutTemplates' => "{main2: '{preview}  {remove} {browse}'}",
-                                'allowedFileExtensions' => array("jpg", "png", "gif"),
-                                'initialPreviewAsData' => true, // identify if you are sending preview data only and not the raw markup
-                                'initialPreviewFileType' => 'image', // image is the default and can be overridden in config below
-                                'initialPreviewConfig' => array(
-                                    array('caption' => "People-1.jpg", 'size' => 576237, 'width' => "120px", 'url' => "/admin/news/default/deleteFile", 'key' => 1),
-                                    array('caption' => "People-2.jpg", 'size' => 932882, 'width' => "120px", 'url' => "/admin/news/default/deleteFile", 'key' => 2),
-                                ),
-                                /*      'uploadExtraData'=>"js:function() {  // callback example
-                                  var out = {}, key, i = 0;
-                                  $('.kv-input:visible').each(function() {
-                                  var el = $(this);
-                                  key = el.hasClass('kv-new') ? 'new_' + i : 'init_' + i;
-                                  out[key] = el.val();
-                                  i++;
-                                  });
-                                  return out;
-                                  }", */
-                                'uploadExtraData' => array(
-                                    'img_key' => "1000",
-                                    'img_keywords' => "happy, places",
-                                ),
-                                'previewSettings' => array(
-                                    'image' => array('width' => "120px", 'height' => "120px"),
-                                )
-                            ),
-                            'afterContent' => '<div id="kv-avatar-errors" style="display:none"></div>'
-                        ),
-                    ),
-                ),
-            ),
-            'buttons' => array(
-                'submit' => array(
-                    'type' => 'submit',
-                    'class' => 'btn btn-success',
-                    'label' => $this->isNewRecord ? Yii::t('app', 'CREATE', 0) : Yii::t('app', 'SAVE')
-                )
-            )
-        );
-    }
-
-    public function getGridColumns() {
-        return array(
-            array(
-                'name' => 'name',
-                'type' => 'raw',
-                'htmlOptions' => array('class' => 'text-left'),
-                'value' => 'Html::link(Html::encode($data->name),"/forum/category/$data->id", array("target"=>"_blank"))',
-            ),
-
-            array(
-                'name' => 'views',
-                'value' => '$data->views',
-                'htmlOptions' => array('class' => 'text-center')
-            ),
-
-            array(
-                'name' => 'date_create',
-                'value' => 'CMS::date($data->date_create)',
-            ),
-            array(
-                'name' => 'date_update',
-                'value' => 'CMS::date($data->date_update)',
-            ),
-            'DEFAULT_CONTROL' => array(
-                'class' => 'ButtonColumn',
-                'template' => '{switch}{update}{delete}',
-            ),
-            'DEFAULT_COLUMNS' => array(
-                array('class' => 'CheckBoxColumn'),
-                array('class' => 'ext.sortable.SortableColumn')
-            ),
-        );
-    }
-
 
     /**
      * @return string the associated database table name
@@ -238,6 +78,9 @@ class Categories extends \panix\engine\db\ActiveRecord {
     public function getTopics() {
         return $this->hasMany(Topics::className(), ['category_id' => 'id'])->orderBy('id DESC');
     }
+    public function getTopicsList() {
+        return $this->hasMany(Topics::className(), ['category_id' => 'id'])->orderBy('fixed DESC, date_update DESC');
+    }
 
     /**
      * @return array relational rules.
@@ -247,7 +90,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
 
             //'topicsCount' => array(self::STAT, 'ForumTopics', 'category_id'),
             //'topics' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topics`.`id` DESC'),
-            'topicsList' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topicsList`.`fixed` DESC, `topicsList`.`date_update` DESC'),
+         //   'topicsList' => array(self::HAS_MANY, 'ForumTopics', 'category_id', 'order'=>'`topicsList`.`fixed` DESC, `topicsList`.`date_update` DESC'),
 
             
 
