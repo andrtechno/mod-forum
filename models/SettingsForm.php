@@ -1,7 +1,7 @@
 <?php
 namespace panix\mod\forum\models;
 class SettingsForm extends \panix\engine\SettingsModel {
-
+    protected $module='forum';
     public $pagenum;
     public $edit_post_time;
     public $enable_post_delete;
@@ -19,36 +19,13 @@ class SettingsForm extends \panix\engine\SettingsModel {
         );
     }
 
-    public function getForm() {
-        return new CMSForm(array(
-            'attributes' => array(
-                'id' => __CLASS__,
-                'class' => 'form-horizontal',
-            ),
-            'showErrorSummary' => true,
-            'elements' => array(
-                'pagenum' => array('type' => 'text'),
-                'edit_post_time' => array('type' => 'text'),
-                'enable_post_delete' => array('type' => 'checkbox'),
-                'enable_guest_addtopic' => array('type' => 'checkbox'),
-                'enable_guest_addpost' => array('type' => 'checkbox'),
-            ),
-            'buttons' => array(
-                'submit' => array(
-                    'type' => 'submit',
-                    'class' => 'btn btn-success',
-                    'label' => Yii::t('app', 'SAVE')
-                )
-            )
-                ), $this);
-    }
 
     public function rules() {
-        return array(
-            array('pagenum, edit_post_time', 'required'),
-            array('enable_post_delete, enable_guest_addpost, enable_guest_addtopic', 'boolean'),
-            array('pagenum, edit_post_time', 'numerical', 'integerOnly' => true),
-        );
+        return [
+            [['pagenum', 'edit_post_time'], 'required'],
+            [['enable_post_delete', 'enable_guest_addpost', 'enable_guest_addtopic'], 'boolean'],
+            [['pagenum', 'edit_post_time'], 'number'],
+        ];
     }
 
 }

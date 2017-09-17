@@ -1,15 +1,72 @@
 <?php
+use panix\mod\forum\models\Categories;
+use panix\mod\forum\models\CategoriesNode;
 
-/*$this->widget('ext.adminList.GridView', array(
-    'dataProvider' => $model->search(),
-    'enableHeader' => true,
-    'name' => $this->pageName,
-    'filter' => $model
-));*/
-            Yii::app()->tpl->openWidget(array(
-                'title' => $this->pageName,
-            ));
-$plugins = array();
+
+echo \panix\ext\jstree\JsTree::widget([
+    'id' => 'CategoryTree',
+    'name' => 'jstree',
+    'data' => CategoriesNode::fromArray(Categories::findOne(1)->children()->all(), ['switch' => true]),
+    'core' => [
+        'force_text' => true,
+        'animation' => 0,
+        'strings' => [
+            'Loading ...' => Yii::t('app', 'LOADING')
+        ],
+        "themes" => ["stripes" => true, 'responsive' => true,"variant" => "large"],
+        'check_callback' => true
+    ],
+    'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
+    'contextmenu' => [
+        'items' => new yii\web\JsExpression('function($node) {
+                var tree = $("#jsTree_CategoryTree").jstree(true);
+                return {
+                    "Switch": {
+                        "icon":"icon-eye",
+                        "label": "' . Yii::t('app', 'Скрыть показать') . '",
+                        "action": function (obj) {
+                            $node = tree.get_node($node);
+                            categorySwitch($node);
+                        }
+                    }, 
+                    "Add": {
+                        "icon":"icon-add",
+                        "label": "' . Yii::t('app', 'CREATE') . '",
+                        "action": function (obj) {
+                            $node = tree.get_node($node);
+                            console.log($node);
+                            window.location = "/admin/forum/default/create?parent_id="+$node.id.replace("node_", "");
+                        }
+                    }, 
+                    "Edit": {
+                        "icon":"icon-edit",
+                        "label": "' . Yii::t('app', 'UPDATE') . '",
+                        "action": function (obj) {
+                            $node = tree.get_node($node);
+                           window.location = "/admin/forum/default/update?id="+$node.id.replace("node_", "");
+                        }
+                    },  
+                    "Rename": {
+                        "icon":"icon-rename",
+                        "label": "' . Yii::t('app', 'RENAME') . '",
+                        "action": function (obj) {
+                            console.log($node);
+                            tree.edit($node);
+                        }
+                    },                         
+                    "Remove": {
+                        "icon":"icon-trashcan",
+                        "label": "' . Yii::t('app', 'DELETE') . '",
+                        "action": function (obj) { 
+                            tree.delete_node($node);
+                        }
+                    }
+                };
+      }')
+    ]
+]);
+
+/*$plugins = array();
 //if (Yii::app()->user->openAccess(array('Shop.Category.*', 'Shop.Category.MoveNode'))) {
  //   Yii::app()->tpl->alert('info', Yii::t('ShopModule.admin', "Используйте 'drag-and-drop' для сортировки категорий."), false);
     $plugins[] = 'dnd';
@@ -20,12 +77,9 @@ $plugins[] = 'wholerow';
 $plugins[] = 'state';
 $this->widget('ext.jstree.JsTree', array(
     'id' => 'ForumCategoriesTree',
-    'data' => ForumCategoriesNode::fromArray(ForumCategories::model()->findAllByPk(1), array('switch' => false)),
+    'data' => CategoriesNode::fromArray(Categories::model()->findAllByPk(1), array('switch' => false)),
     'options' => array(
-        /*  "panix" => 'js:function (node) {
-          console.log(node);
-          return node.text === "Насосное оборудование" ? true : false;
-          }', */
+
         'core' => array(
             'force_text' => true,
             'animation' => 0,
@@ -107,5 +161,5 @@ $this->widget('ext.jstree.JsTree', array(
         )
     ),
 ));
-          Yii::app()->tpl->closeWidget();
+*/
 ?>

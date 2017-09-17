@@ -1,7 +1,7 @@
 <?php
 
 namespace panix\mod\forum;
-
+use Yii;
 class Module extends \panix\engine\WebModule {
 
     public $edit_mode = true;
@@ -37,11 +37,23 @@ class Module extends \panix\engine\WebModule {
                     [
                         'label' => 'forum',
                         'url' => ['/admin/forum'],
-                        'icon' => Html::icon($this->icon),
+                        'icon' => $this->icon,
                     ],
                 ],
             ],
         ];
     }
-
+    public function getName(){
+        return Yii::t('forum/default', 'MODULE_NAME');
+    }
+    public function getInfo() {
+        return [
+            'label' => Yii::t('forum/default', 'MODULE_NAME'),
+            'author' => 'andrew.panix@gmail.com',
+            'version' => '1.0',
+            'icon' => $this->icon,
+            'description' => Yii::t('forum/default', 'MODULE_DESC'),
+            'url' => ['/admin/forum'],
+        ];
+    }
 }

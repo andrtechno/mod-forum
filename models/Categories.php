@@ -60,16 +60,15 @@ class Categories extends \panix\engine\db\ActiveRecord {
      * @return array validation rules for model attributes.
      */
     public function rules() {
-        return array(
-            array('name, hint', 'type', 'type' => 'string'),
-            array('name', 'length', 'min' => 3),
-            array('name', 'required'),
-
-            array('date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-            array('seo_alias', 'length', 'max' => 255),
-            array('name', 'length', 'max' => 140),
-            array('id, name, seo_alias, hint, date_update, date_create', 'safe', 'on' => 'search'),
-        );
+        return [
+            [['name', 'hint'], 'string'],
+            ['name', 'string', 'min' => 3],
+            ['name', 'required'],
+           // ['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+            ['seo_alias', 'string', 'max' => 255],
+            ['name', 'string', 'max' => 140],
+            [['id', 'name', 'seo_alias', 'hint', 'date_update', 'date_create'], 'safe'],
+        ];
     }
 
     public function getTopicsCount() {

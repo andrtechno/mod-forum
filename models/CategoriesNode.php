@@ -1,7 +1,7 @@
 <?php
 namespace panix\mod\forum\models;
 
-class CategoriesNode extends \yii\base\Component implements ArrayAccess {
+class CategoriesNode extends \yii\base\Component implements \ArrayAccess {
 
     /**
      * @var ShopCategory
@@ -37,7 +37,7 @@ class CategoriesNode extends \yii\base\Component implements ArrayAccess {
     /**
      * @param ShopCategory $model
      */
-    public function __construct(ForumCategories $model, $options = array()) {
+    public function __construct(Categories $model, $options = array()) {
         $this->options = & $options;
         $this->model = & $model;
         return $this;
@@ -58,7 +58,7 @@ class CategoriesNode extends \yii\base\Component implements ArrayAccess {
             }else{
                 $options['switch'] = array();
             }
-                $result[] = new ForumCategoriesNode($row, $options);
+                $result[] = new CategoriesNode($row, $options);
            // }
         }
         return $result;
@@ -75,7 +75,7 @@ class CategoriesNode extends \yii\base\Component implements ArrayAccess {
      * @return array
      */
     public function getChildren() {
-        return self::fromArray($this->model->children()->findAll(), $this->options);
+        return self::fromArray($this->model->children()->all(), $this->options);
     }
 
     /**

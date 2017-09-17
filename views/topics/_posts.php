@@ -35,7 +35,7 @@ use panix\engine\Html;
                 </div>
                 <?php if ($model->user) { ?>
                     <div>zzzzzzzzzzzzzzzzzzzzzz</div>
-                    <div><?= Yii::t('forum/default', 'MESSAGES', array('{num}' => $model->user->forum_posts_count)) ?></div>    
+                    <div><?= Yii::t('forum/default', 'MESSAGES', array('num' => $model->user->forum_posts_count)) ?></div>    
                 <?php } ?>
 
             </div>
