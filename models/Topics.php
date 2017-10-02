@@ -101,10 +101,9 @@ class Topics extends \panix\engine\db\ActiveRecord {
     public function behaviors() {
         $a = array();
         if (Yii::$app->hasModule('comments')) {
-            Yii::import('mod.comments.models.Comments');
             $a['comments'] = array(
-                'class' => 'mod.comments.components.CommentBehavior',
-                'model' => 'mod.shop.models.ShopProduct',
+                'class' => 'panix\mod\comments\components\CommentBehavior',
+              //  'model' => 'mod.shop.models.ShopProduct',
                 'owner_title' => 'title', // Attribute name to present comment owner in admin panel
             );
         }
