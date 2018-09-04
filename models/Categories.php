@@ -72,13 +72,13 @@ class Categories extends \panix\engine\db\ActiveRecord {
     }
 
     public function getTopicsCount() {
-        return $this->hasMany(Topics::className(), ['category_id' => 'id'])->count();
+        return $this->hasMany(Topics::class, ['category_id' => 'id'])->count();
     }
     public function getTopics() {
-        return $this->hasMany(Topics::className(), ['category_id' => 'id'])->orderBy('id DESC');
+        return $this->hasMany(Topics::class, ['category_id' => 'id'])->orderBy('id DESC');
     }
     public function getTopicsList() {
-        return $this->hasMany(Topics::className(), ['category_id' => 'id'])->orderBy('fixed DESC, date_update DESC');
+        return $this->hasMany(Topics::class, ['category_id' => 'id'])->orderBy('fixed DESC, date_update DESC');
     }
 
     /**
@@ -112,7 +112,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
     public function behaviors() {
         return [
             'tree' => [
-                'class' => NestedSetsBehavior::className(),
+                'class' => NestedSetsBehavior::class,
             // 'treeAttribute' => 'tree',
             // 'leftAttribute' => 'lft',
             // 'rightAttribute' => 'rgt',

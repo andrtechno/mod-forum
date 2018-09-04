@@ -71,11 +71,11 @@ class Posts extends \panix\engine\db\ActiveRecord {
     }
     
     public function getUser() {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
     
      public function getUserEdit() {
-        return $this->hasOne(User::className(), ['id' => 'edit_user_id']);
+        return $this->hasOne(User::class, ['id' => 'edit_user_id']);
     }
     /**
      * @return array relational rules.

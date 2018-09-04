@@ -59,22 +59,22 @@ class Topics extends \panix\engine\db\ActiveRecord {
         ];
     }
     public function getCategory() {
-        return $this->hasOne(Categories::className(), ['id' => 'category_id']);
+        return $this->hasOne(Categories::class, ['id' => 'category_id']);
     }
     
     public function getUser() {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
     
     public function getPostsCount() {
-        return $this->hasMany(Posts::className(), ['topic_id' => 'id'])->count();
+        return $this->hasMany(Posts::class, ['topic_id' => 'id'])->count();
     }
     
     public function getPostsDesc() {
-        return $this->hasMany(Posts::className(), ['topic_id' => 'id'])->orderBy('id DESC');
+        return $this->hasMany(Posts::class, ['topic_id' => 'id'])->orderBy('id DESC');
     }
     public function getPosts() {
-        return $this->hasMany(Posts::className(), ['topic_id' => 'id'])->orderBy('id ASC');
+        return $this->hasMany(Posts::class, ['topic_id' => 'id'])->orderBy('id ASC');
     }
     /**
      * @return array relational rules.
