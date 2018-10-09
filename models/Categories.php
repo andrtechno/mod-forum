@@ -26,7 +26,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%forum_categories}}';
+        return '{{%forum__categories}}';
     }
 
     public function scopes() {

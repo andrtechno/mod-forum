@@ -13,7 +13,7 @@ class Posts extends \panix\engine\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%forum_posts}}';
+        return '{{%forum__posts}}';
     }
 
     public function scopes() {

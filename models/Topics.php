@@ -15,7 +15,7 @@ class Topics extends \panix\engine\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%forum_topics}}';
+        return '{{%forum__topics}}';
     }
 
     public function scopes() {
