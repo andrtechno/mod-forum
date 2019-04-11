@@ -12,12 +12,12 @@ $subCategories = $model->children()->all();
 
 
     <?php if (count($subCategories) > 0) { ?>
-        <div class="panel panel-primary">
-            <div class="panel-heading">
+        <div class="card bg-primary">
+            <div class="card-header">
 
                 Подфорумы
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
 
@@ -48,11 +48,11 @@ $subCategories = $model->children()->all();
     <?php echo $this->render('partials/_addtopic', array('model' => $model)); ?>
     <div class="clearfix"></div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
+    <div class="card bg-primary">
+        <div class="card-header">
             <?= $model->name ?>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
             <?php if ($model->topics) { ?>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-condensed">
@@ -93,7 +93,7 @@ $subCategories = $model->children()->all();
                                     <?php } else { ?>
                                         <?= Yii::t('app', Yii::$app->user->guestName); ?>,
                                     <?php } ?>
-                                    <?= CMS::date($data->date_create,true,true) ?>
+                                    <?= CMS::date($data->created_at,true) ?>
 
                                     <?php
                                     $per_page = (int) Yii::$app->settings->get('forum', 'pagenum');
@@ -108,17 +108,17 @@ $subCategories = $model->children()->all();
                                         <ul class="pagination pagination-xs">
                                             <?php for ($i = 1; $i <= $num_pages; $i++) { ?>
                                                 <?php if ($i <= 3) { ?>
-                                                    <li><a href="<?= Yii::$app->createUrl('/forum/topics/view', array('id' => $data->id, 'page' => $i)) ?>" title="<?= CMS::date($data->date_create,true,true) ?> <?= $data->title ?> Перейти к странице <?= $i ?>"><?= $i ?></a></li>
+                                                    <li><a href="<?= Yii::$app->createUrl('/forum/topics/view', array('id' => $data->id, 'page' => $i)) ?>" title="<?= CMS::date($data->created_at,true,true) ?> <?= $data->title ?> Перейти к странице <?= $i ?>"><?= $i ?></a></li>
                                                 <?php } ?>
                                             <?php } ?>
                                             <?php if ($num_pages >= 3) { ?>
-                                                <li><a href="<?= Yii::$app->createUrl('/forum/topics/view', array('id' => $data->id, 'page' => $num_pages)) ?>" title="<?= CMS::date($data->date_create,true,true) ?> <?= $data->title ?> Перейти к странице <?= $num_pages ?>"><?= $num_pages ?> &rarr;</a></li>
+                                                <li><a href="<?= Yii::$app->createUrl('/forum/topics/view', array('id' => $data->id, 'page' => $num_pages)) ?>" title="<?= CMS::date($data->created_at,true,true) ?> <?= $data->title ?> Перейти к странице <?= $num_pages ?>"><?= $num_pages ?> &rarr;</a></li>
                                             <?php } ?>
                                         </ul>
                                     <?php } ?>
                                 </td>
                                 <td width="15%" class="text-right">
-                                    <div><b><?= $data->views ?></b> <?= CMS::GetFormatWord('forum/default', 'VIEWS', $data->views); ?></div>
+                                    <div><?= Yii::t('app', 'VIEWS', ['n'=>$data->views]); ?></div>
                                     <div><b><?= ($data->postsCount > 0) ? $data->postsCount - 1 : 0 ?></b> <?= CMS::GetFormatWord('forum/default', 'POSTS', ($data->postsCount > 0) ? $data->postsCount - 1 : 0); ?></div>
                                 <td width="20%">
 
@@ -134,7 +134,7 @@ $subCategories = $model->children()->all();
 
 
                                         <br/>
-                                        <?= CMS::date($data->postsDesc[0]->date_create,true,true); ?>
+                                        <?= CMS::date($data->postsDesc[0]->created_at,true,true); ?>
                                     <?php } else { ?>
 
                                         <div class="text-center"><?= Yii::t('forum/default', 'NO_MESSAGES'); ?></div>
@@ -164,7 +164,7 @@ $subCategories = $model->children()->all();
       //  $session = Session::model()->findAllByAttributes(array('current_url' => Yii::$app->request->url));
         ?>
 
-        <div><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', array('{num}' => count($session))); ?></div>
+        <div><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', ['num' => $session]); ?></div>
         <?php
         $t = 0;
         $guests = 0;

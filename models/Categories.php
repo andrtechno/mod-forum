@@ -29,7 +29,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
         return '{{%forum__categories}}';
     }
 
-    public function scopes() {
+    public function scopes22() {
         return CMap::mergeArray(array(
                     'latast' => array(
                         'order' => 'date_create DESC'
@@ -67,7 +67,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
            // ['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
             ['seo_alias', 'string', 'max' => 255],
             ['name', 'string', 'max' => 140],
-            [['id', 'name', 'seo_alias', 'hint', 'date_update', 'date_create'], 'safe'],
+            [['id', 'name', 'seo_alias', 'hint', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
@@ -78,7 +78,12 @@ class Categories extends \panix\engine\db\ActiveRecord {
         return $this->hasMany(Topics::class, ['category_id' => 'id'])->orderBy('id DESC');
     }
     public function getTopicsList() {
-        return $this->hasMany(Topics::class, ['category_id' => 'id'])->orderBy('fixed DESC, date_update DESC');
+        return $this->hasMany(Topics::class, ['category_id' => 'id'])->orderBy('fixed DESC, updated_at DESC');
+    }
+
+
+    public function getLastPost() {
+        return $this->hasMany(Posts::class, ['id'=>'last_post_id']);
     }
 
     /**
@@ -98,7 +103,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
             //'lastPost' => array(self::BELONGS_TO, 'ForumPosts', 'id','order'=>'`lastPost`.`id` DESC'),
             'lastTopic' => array(self::BELONGS_TO, 'ForumTopics', 'last_topic_id'),
 
-            'lastPost' => array(self::BELONGS_TO, 'ForumPosts', 'last_post_id'),
+         //   'lastPost' => array(self::BELONGS_TO, 'ForumPosts', 'last_post_id'),
 
             
 

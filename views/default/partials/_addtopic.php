@@ -9,11 +9,11 @@ use panix\engine\Html;
                     Опции форума
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#"><i class="icon-rename"></i> Показать скрытые</a></li>
-                    <li><a href="#">Показать скрытые темы</a></li>
-                    <li><a href="#"><i class="icon-delete"></i> Удаление / массовое перемещение</a></li>
-                </ul>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <a class="dropdown-item" href="#"><i class="icon-rename"></i> Показать скрытые</a>
+                    <a class="dropdown-item" href="#">Показать скрытые темы</a>
+                    <a class="dropdown-item" href="#"><i class="icon-delete"></i> Удаление / массовое перемещение</a>
+                </div>
             </span>
         <?php } ?>
         <?php if ($model->checkAddTopic()) { ?>

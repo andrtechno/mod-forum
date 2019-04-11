@@ -38,24 +38,26 @@ $form = ActiveForm::begin([
     </div>
 <?php ActiveForm::end(); ?>
 <?php } ?>
-<script>
+
+
+<?php $this->registerJs('
     $(function () {
         $("#add-post-reply").on("click", function () {
             tinyMCE.triggerSave();
             var f = $("#addreply");
             var action = f.attr("action");
             var serializedForm = f.serialize();
-            serializedForm +='&json=1';
+            serializedForm +="&json=1";
             //tinyMCE.triggerSave();
             $.ajax({
-                type: 'POST',
+                type: "POST",
                 url: action,
                 data: serializedForm,
-                dataType:'json',
+                dataType:"json",
                 //async: false,
                 success: function (data, textStatus, request) {
                     //$("#ajax-addreply").html(data);
-                    common.notify(data.message,'success');
+                    common.notify(data.message,"success");
                     $.fn.yiiListView.update("topic-list");
                 },
                 error: function (req, status, error) {
@@ -65,7 +67,4 @@ $form = ActiveForm::begin([
             return false;
         });
     });
-    
-
-
-</script>
+');

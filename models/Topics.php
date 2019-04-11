@@ -18,7 +18,7 @@ class Topics extends \panix\engine\db\ActiveRecord {
         return '{{%forum__topics}}';
     }
 
-    public function scopes() {
+    public function scopes222() {
         return CMap::mergeArray(array(
                     'latast' => array(
                         'order' => 'date_create DESC'
@@ -53,9 +53,9 @@ class Topics extends \panix\engine\db\ActiveRecord {
             [['title', 'text'], 'string', 'min' => 3],
             [['title', 'text'], 'required'],
             ['is_close', 'boolean'],
-           //['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+           //['created_at, updated_at', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
             ['title', 'string', 'max' => 140],
-            [['id', 'user_id', 'title', 'date_update', 'date_create'], 'safe'],
+            [['id', 'user_id', 'title', 'updated_at', 'created_at'], 'safe'],
         ];
     }
     public function getCategory() {

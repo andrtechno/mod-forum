@@ -32,9 +32,9 @@ $form = ActiveForm::begin([
 
     </div>
     <div class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">Опции модератора</div>
-            <div class="panel-body">
+        <div class="card bg-light">
+            <div class="card-header">Опции модератора</div>
+            <div class="card-body">
                 <div class="form-inline">
                     <label for="exampleInputFile">Лейбел</label>
                     <select class="form-control">

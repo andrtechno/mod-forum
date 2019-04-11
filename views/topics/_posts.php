@@ -2,12 +2,12 @@
 use panix\engine\CMS;
 use panix\engine\Html;
 ?>
-<div class="panel panel-default forum-post" name="post-<?= ($index + 1) ?>" id="post-<?= ($index + 1) ?>">
-    <div class="panel-heading clearfix">
-        <div class="pull-left">
+<div class="card panel-default forum-post" name="post-<?= ($index + 1) ?>" id="post-<?= ($index + 1) ?>">
+    <div class="card-header clearfix">
+        <div class="float-left">
             <?= ($model->user) ? $model->user->username : Yii::t('app', Yii::$app->user->guestName); ?>
         </div>
-        <div class="pull-right">
+        <div class="float-right">
             <?php if (Yii::$app->user->can('admin')) { ?>
                 <?= CMS::ip('195.78.247.104');//$model->ip_create ?>
             <?php } ?>
@@ -16,7 +16,7 @@ use panix\engine\Html;
             <?= Html::a(Html::tag('i', '', array('class' => 'icon-share')), '', array('class' => 'btn btn-link', 'style' => 'padding:0;')); ?>
         </div>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <div class="row">
             <div class="col-md-2 col-sm-3 col-xs-4 text-center">
 
@@ -40,7 +40,7 @@ use panix\engine\Html;
 
             </div>
             <div class="col-md-10 col-sm-9 col-xs-8">
-                <div class="help-block"><?= Yii::t('forum/default', 'POST_SENDDATE'); ?> <?= CMS::date($model->date_create, true, true); ?></div>
+                <div class="help-block"><?= Yii::t('forum/default', 'POST_SENDDATE'); ?> <?= CMS::date($model->created_at, true); ?></div>
                 <div id="post-edit-ajax-<?= $model->id; ?>">
                     <?php echo $this->render('_posts_content', array('model' => $model)); ?>
 
@@ -49,7 +49,7 @@ use panix\engine\Html;
             </div>
         </div>
     </div>
-    <div class="panel-footer text-right">
+    <div class="card-footer text-right">
 
 
 

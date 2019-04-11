@@ -106,7 +106,7 @@ class TopicsController extends \panix\engine\controllers\WebController {
                 if ($postModel->validate()) {
                     if ($postModel->save()) {
 
-                        $postModel->topic->date_update = date('Y-m-d H:i:s', CMS::time());
+                       // $postModel->topic->update_at = date('Y-m-d H:i:s', CMS::time());
                         $postModel->topic->save(false);
 
                         $postModel->topic->category->last_post_user_id = $postModel->user_id;

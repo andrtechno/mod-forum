@@ -1,40 +1,42 @@
 <?php
 use panix\engine\Html;
 use panix\mod\user\models\User;
+
 $total_posts = 0;
 ?>
 <div class="forum">
     <h1><?= $this->context->pageName; ?></h1>
 
     <?php foreach ($categories as $category) { ?>
-        <div class="panel panel-primary">
-            <div class="panel-heading">
+        <div class="card bg-primary">
+            <div class="card-header">
 
                 <?= $category->name ?>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
 
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
                         <?php
                         foreach ($category->children()->published()->all() as $data) {
                             $total_posts += $data->count_posts;
-                           echo $this->render('partials/_categories_list', array('data' => $data));
+                            echo $this->render('partials/_categories_list', array('data' => $data));
                         }
                         ?>
+                    </table>
                 </div>
-                </table>
+
             </div>
         </div>
     <?php } ?>
 
 
-    <div class="col-md-3 text-center"><span class="badge"><?= $total_posts ?></span> Всего сообщений</div>
-    <div class="col-md-3 text-center"><span class="badge"><?= User::find()->count(); ?></span> Пользователей</div>
-    <div class="col-md-3 text-center"><span class="badge"><?php //echo User::find()->lastRecord()->find()->login; ?></span> Новый участник</div>
-    <div class="col-md-3 text-center"><span class="badge">2</span> Рекорд посещаемости </div>
-
-
+    <div class="col-md-3 text-center"><span class="badge"><?= $total_posts ?></span> <?= Yii::t('forum/default','Всего сообщений'); ?></div>
+    <div class="col-md-3 text-center"><span class="badge"><?= User::find()->count(); ?></span> <?= Yii::t('forum/default','Пользователей'); ?></div>
+    <div class="col-md-3 text-center"><span
+                class="badge"><?php //echo User::find()->lastRecord()->find()->login; ?></span> <?= Yii::t('forum/default','Новый участник'); ?>
+    </div>
+    <div class="col-md-3 text-center"><span class="badge">2</span> <?= Yii::t('forum/default','Рекорд посещаемости'); ?></div>
 
 
     <div class="">
@@ -45,7 +47,7 @@ $total_posts = 0;
         //$session = Session::model()->findAllByAttributes(array('current_url' => Yii::app()->request->url));
         ?>
 
-        <div><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', array('num' => count($session))); ?></div>
+        <div><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', ['num' => $session]); ?></div>
         <?php
         $total = 0;
         $guests = 0;
@@ -66,16 +68,10 @@ $total_posts = 0;
         ?>
         <div>Пользователей онлайн: <?= $total ?> (за последние 15 минут)</div>
 
-        admin 
+        admin
 
 
     </div>
-
-
-
-
-
-
 
 
     <div>
@@ -84,7 +80,6 @@ $total_posts = 0;
         <a class="btn btn-link" href="#">Самые активные сегодня</a>
         <a class="btn btn-link" href="#">Самые активные Самый</a>
         <a class="btn btn-link" href="#">Популярный Контент</a>
-
 
 
     </div>

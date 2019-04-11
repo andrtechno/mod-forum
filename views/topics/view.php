@@ -1,41 +1,43 @@
 <?php
 use panix\engine\Html;
 use panix\engine\CMS;
+
 ?>
 
 <h1><?= $model->title ?></h1>
-<small>Автор <?= $model->user->username ?>, <?= CMS::date($model->date_create, true, true) ?></small>
+<small>Автор <?= $model->user->username ?>, <?= CMS::date($model->created_at, true) ?></small>
 <div class="forum">
-    <div class="form-group pull-right">
+    <div class="form-group float-right">
         <div class="dropdown">
-            <a class="btn btn-link dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <a class="btn btn-link dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+               aria-expanded="true">
                 Опции модератора
-                <span class="caret"></span>
+
             </a>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <li><a href="#"><i class="icon-rename"></i> Редактировать заголовок</a></li>
-                <li><a href="#">Открыть тему</a></li>
-                <li><a href="#"><i class="icon-move"></i> Переместить тему</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Объединить тему</a></li>
-                <li><a href="#">Скрыть</a></li>
-                <li style="display:none;"><a href="#">Посмотреть историю (опция администратора)</a></li>
-                <li style="display:none;"><a href="#">Отписать всех от этой темы</a></li>
-                <li><a href="#"><i class="icon-delete"></i> <?= Yii::t('app', 'DELETE') ?></a></li>
-            </ul>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <a class="dropdown-item" href="#"><i class="icon-rename"></i> Редактировать заголовок</a>
+                <a class="dropdown-item" href="#">Открыть тему</a>
+                <a class="dropdown-item" href="#"><i class="icon-move"></i> Переместить тему</a>
+                <div class="dropdown-item" role="separator"></div>
+                <a class="dropdown-item" href="#">Объединить тему</a>
+               <a class="dropdown-item" href="#">Скрыть</a>
+                <a class="dropdown-item" href="#">Посмотреть историю (опция администратора)</a>
+                <a class="dropdown-item" href="#">Отписать всех от этой темы</a>
+                <a  class="dropdown-item" href="#"><i class="icon-delete"></i> <?= Yii::t('app', 'DELETE') ?></a>
+            </div>
             <?php if ($model->is_close) { ?>
-                <a href="#" class="btn btn-danger"><i class="icon-locked"></i>  Закрыта (нажмите для ответа)</a>
+                <a href="#" class="btn btn-danger"><i class="icon-locked"></i> Закрыта (нажмите для ответа)</a>
             <?php } ?>
         </div>
 
 
     </div>
     <div class="clearfix"></div>
-    <div class="panel panel-primary">
-        <div class="panel-heading">
+    <div class="card bg-primary">
+        <div class="card-header">
             <?php
             if (count($model->posts) >= 1) {
-                echo Yii::t('forum/default', 'POST_MESSAGES_NUM', array('count' => count($model->posts) - 1));
+                echo Yii::t('forum/default', 'POST_MESSAGES_NUM', ['count' => count($model->posts) - 1]);
             } elseif (count($model->posts) <= 1) {
                 echo Yii::t('forum/default', 'POST_MESSAGES_NO');
             } else {
@@ -44,28 +46,28 @@ use panix\engine\CMS;
             ?>
 
         </div>
-        <div class="panel-body  bg-info2">
+        <div class="card-body  bg-info2">
 
 
             <?php
-           
-                    echo yii\widgets\ListView::widget([
-    'dataProvider' => $providerPosts,
-    'itemView' => '_posts',
-]);
-            
-           /* $this->widget('ListView', array(
+
+            echo yii\widgets\ListView::widget([
                 'dataProvider' => $providerPosts,
-                'id' => 'topic-list',
-                'ajaxUpdate' => true,
-                'template' => '{items} {pager}',
                 'itemView' => '_posts',
-                'pagerCssClass' => 'page text-center',
-                'enableHistory' => true,
-                'pager' => array(
-                    'header' => '',
-                ),
-            ));*/
+            ]);
+
+            /* $this->widget('ListView', array(
+                 'dataProvider' => $providerPosts,
+                 'id' => 'topic-list',
+                 'ajaxUpdate' => true,
+                 'template' => '{items} {pager}',
+                 'itemView' => '_posts',
+                 'pagerCssClass' => 'page text-center',
+                 'enableHistory' => true,
+                 'pager' => array(
+                     'header' => '',
+                 ),
+             ));*/
             ?>
 
 
@@ -74,13 +76,14 @@ use panix\engine\CMS;
     <br/><br/>
 
     <?php if (!Yii::$app->user->isGuest) { ?>
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card bg-light">
+            <div class="card-header">
                 Ответить
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <?php if ($model->is_close) { ?>
-                    <div class="alert alert-info"><span class=" text-danger">Обратите внимание, что эта тема закрыта, но вы можете отвечать в закрытые темы.</span></div>
+                    <div class="alert alert-info"><span class=" text-danger">Обратите внимание, что эта тема закрыта, но вы можете отвечать в закрытые темы.</span>
+                    </div>
                 <?php } ?>
 
                 <div id="ajax-addreply">
@@ -100,46 +103,46 @@ use panix\engine\CMS;
 
         <?php
         $session = 0;
-       // $session = Session::model()->with('user')->findAllByAttributes(array('current_url' => Yii::$app->request->url));
+        // $session = Session::model()->with('user')->findAllByAttributes(array('current_url' => Yii::$app->request->url));
         ?>
 
-        <h4><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', array('num' => count($session))); ?></h4>
+        <h4><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', ['num' => $session]); ?></h4>
         <?php
         $t = 0;
         $guests = 0;
         $bots = 0;
         $users = 0;
         $readNames = array();
-      /*  foreach ($session as $val) {
+        /*  foreach ($session as $val) {
 
-            if ($val->user_type == 2 || $val->user_type == 3) {
-                $users++;
+              if ($val->user_type == 2 || $val->user_type == 3) {
+                  $users++;
 
-                if ($val->user) {
+                  if ($val->user) {
 
-                    $arrayAuthRoleItems = Yii::$app->authManager->getAuthItems(2, $val->user->id);
-                    $roles = array_keys($arrayAuthRoleItems);
+                      $arrayAuthRoleItems = Yii::$app->authManager->getAuthItems(2, $val->user->id);
+                      $roles = array_keys($arrayAuthRoleItems);
 
 
-                    foreach ($roles as $role) {
-                        if (in_array($role, array('Admin', 'Moderator'))) {
-                            $login = Html::tag('b', array('class'=>'text-danger'), $val->user->username, true);
-                        } else {
-                            $login = $val->user->username;
-                        }
-                    }
+                      foreach ($roles as $role) {
+                          if (in_array($role, array('Admin', 'Moderator'))) {
+                              $login = Html::tag('b', array('class'=>'text-danger'), $val->user->username, true);
+                          } else {
+                              $login = $val->user->username;
+                          }
+                      }
 
-                    $readNames[] = Html::a($login, $val->user->getProfileUrl());
-                }
-            } elseif ($val->user_type == 1) {
-                $bots++;
-                $readNames[] = $val->user_login;
-            } else {
-                $guests++;
-            }
+                      $readNames[] = Html::a($login, $val->user->getProfileUrl());
+                  }
+              } elseif ($val->user_type == 1) {
+                  $bots++;
+                  $readNames[] = $val->user_login;
+              } else {
+                  $guests++;
+              }
 
-            $t++;
-        }*/
+              $t++;
+          }*/
         ?>
         <div><?= $users ?> пользователей, <?= $guests ?> гостей, N/A анонимных</div>
         <br/>

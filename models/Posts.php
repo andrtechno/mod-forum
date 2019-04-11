@@ -3,7 +3,9 @@ namespace panix\mod\forum\models;
 
 use Yii;
 use panix\mod\user\models\User;
-class Posts extends \panix\engine\db\ActiveRecord {
+use panix\engine\db\ActiveRecord;
+
+class Posts extends ActiveRecord {
 
     const MODULE_ID = 'forum';
     const route = '/forum/admin/default';
@@ -16,7 +18,7 @@ class Posts extends \panix\engine\db\ActiveRecord {
         return '{{%forum__posts}}';
     }
 
-    public function scopes() {
+    public function scopes2() {
         return CMap::mergeArray(array(
                     'latast' => array(
                         'order' => 'date_create DESC'
@@ -80,7 +82,7 @@ class Posts extends \panix\engine\db\ActiveRecord {
     /**
      * @return array relational rules.
      */
-    public function relations() {
+    public function relations2() {
         return array(
            // 'user' => array(self::BELONGS_TO, 'User', 'user_id'),
           //  'userEdit' => array(self::BELONGS_TO, 'User', 'edit_user_id'),
@@ -97,7 +99,7 @@ class Posts extends \panix\engine\db\ActiveRecord {
             'class' => 'app.behaviors.TimelineBehavior',
             'attributes' => 'title',
         );
-        if (Yii::app()->hasModule('comments')) {
+        if (Yii::$app->hasModule('comments')) {
             Yii::import('mod.comments.models.Comments');
             $a['comments'] = array(
                 'class' => 'mod.comments.components.CommentBehavior',
