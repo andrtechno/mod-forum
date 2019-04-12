@@ -11,9 +11,9 @@
     <?php foreach ($categories as $data) { ?>
         <tr>
             <td>
-        <?= Html::link($data->name, $data->getUrl()) ?>
+        <?= Html::a($data->name, $data->getUrl()) ?>
                 <div class="help-block"><?= $data->hint ?></div>
-                 <?= Html::link('<i class="icon-add"></i>', Yii::app()->createUrl('/forum/default/addCat', array('parent_id' => $data->id))) ?>
+                 <?= Html::a('<i class="icon-add"></i>', Yii::app()->createUrl('/forum/default/addCat', array('parent_id' => $data->id))) ?>
           
             
                 <?php foreach ($data->children()->findAll() as $subdata) { ?>

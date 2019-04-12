@@ -1,10 +1,22 @@
 <?php
 namespace panix\mod\forum\controllers;
 
+use panix\mod\forum\assets\ForumAsset;
 use Yii;
 use panix\mod\forum\models\Categories;
-class DefaultController extends \panix\engine\controllers\WebController {
+use panix\engine\controllers\WebController;
+
+
+class DefaultController extends WebController {
     public $model;
+
+
+    public function beforeAction($action)
+    {
+        ForumAsset::register($this->view);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex() {
         $this->model = Categories::find()->roots()->all();
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');

@@ -1,6 +1,6 @@
 <div class="card bg-light">
     <div class="card-header">
-        <?= Html::link($data->title, $data->getUrl(), array('title' => $data->title)) ?>
+        <?= Html::a($data->title, $data->getUrl(), array('title' => $data->title)) ?>
         <span class="float-right date-time"><?= CMS::date($data->date_create,true,true) ?></span>
 
     </div>
@@ -9,7 +9,7 @@
     </div>
     <div class="card-footer">
         <?php if ($data->user) { ?>
-            <span class="author"><?= Html::link($data->user->login, array('/users/profile/view', 'user_id' => $data->user->id)) ?></span>
+            <span class="author"><?= Html::a($data->user->login, array('/users/profile/view', 'user_id' => $data->user->id)) ?></span>
         <?php } else { ?>
             <span class="author"><?= Yii::t('app','CHECKUSER',0)?></span>
         <?php } ?>

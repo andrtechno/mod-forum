@@ -53,9 +53,9 @@ if (!Yii::$app->user->isGuest) {
         <a id="btn-post-edit" data-id="<?= $model->id ?>" class=" btn btn-primary btn-upper" href="javascript:void(0)"><?= Yii::t('app', 'SEND') ?></a>
         <?= Html::submitButton('Расширенная форма', array('class' => 'btn btn-default')); ?>
         или
-        <?= Html::link('Отмена', 'javascript:void(0);', array('onClick' => 'test()', 'class' => 'btn btn-link remove-editor')); ?>
+        <?= Html::a('Отмена', 'javascript:void(0);', array('onClick' => 'test()', 'class' => 'btn btn-link remove-editor')); ?>
 <?php
-echo CHtml::ajaxSubmitButton('Save',array('/forum/topics/editpost', 'id' => $model->id),array(
+echo Html::ajaxSubmitButton('Save',array('/forum/topics/editpost', 'id' => $model->id),array(
    'type'=>'POST',
    'dataType'=>'json',
     'data'=>'js:$("#form-editpost-'.$model->id.'").serialize()',

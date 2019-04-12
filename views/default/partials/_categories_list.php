@@ -11,8 +11,8 @@ use panix\engine\CMS;
 
     </td>
     <td width="15%" class="text-right">
-        <div><b><?= $data->count_topics ?></b> <?= CMS::GetFormatWord('forum/default', 'TOPICS', $data->count_topics); ?></div>
-        <div><b><?= $data->count_posts ?></b> <?= CMS::GetFormatWord('forum/default', 'POSTS', $data->count_posts); ?></div>
+        <div><b><?= $data->count_topics ?>1111111111111</b> <?= Yii::t('forum/default', 'TOPICS', ['n'=>$data->count_topics]); ?>яя</div>
+        <div><b><?= $data->count_posts ?>1111111111111111111</b> <?= Yii::t('forum/default', 'POSTS', ['n'=>$data->count_posts]); ?>яя</div>
     </td>
     <td width="20%">
 

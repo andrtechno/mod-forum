@@ -48,7 +48,7 @@ $subCategories = $model->children()->all();
     <?php echo $this->render('partials/_addtopic', array('model' => $model)); ?>
     <div class="clearfix"></div>
 
-    <div class="card bg-primary">
+    <div class="card bg-light">
         <div class="card-header">
             <?= $model->name ?>
         </div>
@@ -119,7 +119,7 @@ $subCategories = $model->children()->all();
                                 </td>
                                 <td width="15%" class="text-right">
                                     <div><?= Yii::t('app', 'VIEWS', ['n'=>$data->views]); ?></div>
-                                    <div><b><?= ($data->postsCount > 0) ? $data->postsCount - 1 : 0 ?></b> <?= CMS::GetFormatWord('forum/default', 'POSTS', ($data->postsCount > 0) ? $data->postsCount - 1 : 0); ?></div>
+                                    <div><b><?= ($data->postsCount > 0) ? $data->postsCount - 1 : 0 ?></b> <?= Yii::t('forum/default', 'POSTS', ['n'=>($data->postsCount > 0) ? $data->postsCount - 1 : 0]); ?></div>
                                 <td width="20%">
 
                                     <?php if ($data->postsCount > 0) { ?>

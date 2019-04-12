@@ -8,14 +8,12 @@
 
 namespace panix\mod\forum\assets;
 
-use yii\web\AssetBundle;
+use panix\engine\web\AssetBundle;
 
 class AdminAsset extends AssetBundle {
 
-    public $sourcePath = '@vendor/panix/mod-forum/assets';
-    public $jsOptions = array(
-        'position' => \yii\web\View::POS_END
-    );
+    public $sourcePath = __DIR__.'/admin';
+
     public $js = [
         'js/tree.js',
     ];
