@@ -8,7 +8,7 @@ $total_posts = 0;
     <h1><?= $this->context->pageName; ?></h1>
 
     <?php foreach ($categories as $category) { ?>
-        <div class="card bg-primary">
+        <div class="card">
             <div class="card-header">
 
                 <?= $category->name ?>
@@ -30,14 +30,27 @@ $total_posts = 0;
         </div>
     <?php } ?>
 
-
-    <div class="col-md-3 text-center"><span class="badge"><?= $total_posts ?></span> <?= Yii::t('forum/default','Всего сообщений'); ?></div>
-    <div class="col-md-3 text-center"><span class="badge"><?= User::find()->count(); ?></span> <?= Yii::t('forum/default','Пользователей'); ?></div>
-    <div class="col-md-3 text-center"><span
-                class="badge"><?php //echo User::find()->lastRecord()->find()->login; ?></span> <?= Yii::t('forum/default','Новый участник'); ?>
+    <div class="row">
+        <div class="col-md-3 text-center">
+        <span class="badge badge-secondary">
+            <?= $total_posts ?>
+        </span>
+            <?= Yii::t('forum/default', 'Всего сообщений'); ?>
+        </div>
+        <div class="col-md-3 text-center">
+        <span class="badge badge-secondary">
+            <?= User::find()->count(); ?>
+        </span>
+            <?= Yii::t('forum/default', 'Пользователей'); ?>
+        </div>
+        <div class="col-md-3 text-center">
+            <span class="badge badge-secondary"><?php //echo User::find()->lastRecord()->find()->login; ?></span> <?= Yii::t('forum/default', 'Новый участник'); ?>
+        </div>
+        <div class="col-md-3 text-center">
+            <span class="badge badge-secondary">2</span>
+            <?= Yii::t('forum/default', 'Рекорд посещаемости'); ?>
+        </div>
     </div>
-    <div class="col-md-3 text-center"><span class="badge">2</span> <?= Yii::t('forum/default','Рекорд посещаемости'); ?></div>
-
 
     <div class="">
         <div class="">Share block</div>

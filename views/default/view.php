@@ -12,7 +12,7 @@ $subCategories = $model->children()->all();
 
 
     <?php if (count($subCategories) > 0) { ?>
-        <div class="card bg-primary">
+        <div class="card">
             <div class="card-header">
 
                 Подфорумы

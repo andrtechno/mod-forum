@@ -33,7 +33,7 @@ use panix\engine\CMS;
 
     </div>
     <div class="clearfix"></div>
-    <div class="card bg-primary">
+    <div class="card">
         <div class="card-header">
             <?php
             if (count($model->posts) >= 1) {
