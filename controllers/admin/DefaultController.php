@@ -24,14 +24,9 @@ class DefaultController extends \panix\engine\controllers\AdminController {
      * @param boolean $new
      */
     public function actionUpdate($new = false) {
-        if ($new === true) {
-            $model = new Categories;
-        } else {
-            $model = Categories::findOne($_GET['id']);
-        }
 
-        if (!$model)
-            throw new CHttpException(404);
+        $model = Categories::findModel($_GET['id']);
+
 
 
         $isNewRecord = ($model->isNewRecord) ? true : false;
