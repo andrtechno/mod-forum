@@ -6,13 +6,14 @@
  * @link http://pixelion.com.ua PIXELION CMS
  */
 
-namespace panix\mod\forum\assets;
+namespace panix\mod\forum;
 
 use panix\engine\web\AssetBundle;
 
-class ForumAsset extends AssetBundle {
+class ForumAsset extends AssetBundle
+{
 
-    public $sourcePath = __DIR__;
+    public $sourcePath = __DIR__ . '/assets';
 
     public $css = [
         'css/forum.css'
