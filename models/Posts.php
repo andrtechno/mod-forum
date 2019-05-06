@@ -27,7 +27,7 @@ class Posts extends ActiveRecord {
     }
 
     public function getUrl() {
-        return ['/news/default/view', 'seo_alias' => $this->seo_alias];
+        return ['/news/default/view', 'slug' => $this->slug];
     }
 
     /**
@@ -38,7 +38,7 @@ class Posts extends ActiveRecord {
      */
     public function withUrl($url) {
         $this->getDbCriteria()->mergeWith(array(
-            'condition' => 'seo_alias=:url',
+            'condition' => 'slug=:url',
             'params' => array(':url' => $url)
         ));
 
@@ -68,7 +68,7 @@ class Posts extends ActiveRecord {
             //['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
             ['text', 'string', 'max' => 255],
             //['edit_user_id, user_id', 'numerical', 'integerOnly' => true],
-          //  ['id, user_id, edit_user_id, edit_reason, edit_datetime, seo_alias, text, full_text, date_update, date_create', 'safe'],
+          //  ['id, user_id, edit_user_id, edit_reason, edit_datetime, slug, text, full_text, date_update, date_create', 'safe'],
        ];
     }
     

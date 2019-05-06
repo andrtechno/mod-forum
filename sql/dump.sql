@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}forum_categories` (
   `level` smallint(5) UNSIGNED DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `hint` text,
-  `seo_alias` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
   `full_path` varchar(255) DEFAULT '',
   `image` varchar(255) DEFAULT NULL,
   `created_at` int(11) DEFAULT NULL,
@@ -21,11 +21,11 @@ CREATE TABLE IF NOT EXISTS `{prefix}forum_categories` (
   KEY `lft` (`lft`),
   KEY `rgt` (`rgt`),
   KEY `level` (`level`),
-  KEY `url` (`seo_alias`),
+  KEY `url` (`slug`),
   KEY `full_path` (`full_path`)
 ) ENGINE=MyISAM;
 
-INSERT INTO `{prefix}forum_categories` (`id`, `lft`, `rgt`, `level`, `name`, `hint`, `seo_alias`, `full_path`, `image`, `date_create`, `date_update`, `last_topic_id`, `last_post_id`, `last_post_user_id`, `count_topics`, `count_posts`, `switch`) VALUES
+INSERT INTO `{prefix}forum_categories` (`id`, `lft`, `rgt`, `level`, `name`, `hint`, `slug`, `full_path`, `image`, `date_create`, `date_update`, `last_topic_id`, `last_post_id`, `last_post_user_id`, `count_topics`, `count_posts`, `switch`) VALUES
 (1, 1, 12, 1, 'Тест кат', 'хъахахахах', 'root', '', NULL, NULL, '2017-03-17 23:11:53', 19, 37, 1, 0, 0, 1),
 (2, 2, 5, 2, 'Штакеты', 'ваыффываавфы', NULL, '', NULL, '2017-03-20 06:58:09', '2017-03-17 22:59:08', 13, 27, 1, 0, 0, 1),
 (3, 6, 7, 2, 'sdfa', 'fadsafds', NULL, '', NULL, '2017-03-15 22:58:38', '2017-03-16 09:11:08', 8, 47, 4, 0, 0, 1),

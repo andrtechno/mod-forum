@@ -38,7 +38,7 @@ class Topics extends \panix\engine\db\ActiveRecord {
      */
     public function withUrl($url) {
         $this->getDbCriteria()->mergeWith(array(
-            'condition' => 'seo_alias=:url',
+            'condition' => 'slug=:url',
             'params' => array(':url' => $url)
         ));
 

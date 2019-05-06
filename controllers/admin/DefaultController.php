@@ -118,12 +118,12 @@ class DefaultController extends \panix\engine\controllers\AdminController {
         $model = Categories::findOne((int) $id);
         if ($model) {
             $model->name = $_GET['text'];
-            $model->seo_alias = CMS::translit($model->name);
+            $model->slug = CMS::translit($model->name);
             if ($model->validate()) {
                 $model->saveNode(false, false);
                 $message = Yii::t('shop/admin', 'CATEGORY_TREE_RENAME');
             } else {
-                $message = $model->getError('seo_alias');
+                $message = $model->getError('slug');
             }
             echo \yii\helpers\Json::encode(array(
                 'message' => $message
@@ -137,13 +137,13 @@ class DefaultController extends \panix\engine\controllers\AdminController {
         $parent = Categories::model()->findByPk((int) $_GET['parent_id']);
 
         $model->name = $_GET['text'];
-        $model->seo_alias = CMS::translit($model->name);
+        $model->slug = CMS::translit($model->name);
         if ($model->validate()) {
 
             $model->appendTo($parent);
             $message = Yii::t('ShopModule.admin', 'CATEGORY_TREE_CREATE');
         } else {
-            $message = $model->getError('seo_alias');
+            $message = $model->getError('slug');
         }
         echo \yii\helpers\Json::encode(array(
             'message' => $message
@@ -174,7 +174,7 @@ class DefaultController extends \panix\engine\controllers\AdminController {
         $model->lft = 1;
         $model->rgt = 2;
         $model->level = 1;
-        $model->seo_alias = 'root';
+        $model->slug = 'root';
         $model->full_path = '';
         $model->image = NULL;
         $model->switch = 1;

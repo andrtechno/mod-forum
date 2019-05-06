@@ -49,7 +49,7 @@ class Categories extends \panix\engine\db\ActiveRecord {
      */
     public function withUrl($url) {
         $this->getDbCriteria()->mergeWith(array(
-            'condition' => 'seo_alias=:url',
+            'condition' => 'slug=:url',
             'params' => array(':url' => $url)
         ));
 
@@ -65,9 +65,9 @@ class Categories extends \panix\engine\db\ActiveRecord {
             ['name', 'string', 'min' => 3],
             ['name', 'required'],
            // ['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
-            ['seo_alias', 'string', 'max' => 255],
+            ['slug', 'string', 'max' => 255],
             ['name', 'string', 'max' => 140],
-            [['id', 'name', 'seo_alias', 'hint', 'updated_at', 'created_at'], 'safe'],
+            [['id', 'name', 'slug', 'hint', 'updated_at', 'created_at'], 'safe'],
         ];
     }
 
