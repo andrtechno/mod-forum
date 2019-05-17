@@ -103,7 +103,6 @@ class Posts extends ActiveRecord {
             Yii::import('mod.comments.models.Comments');
             $a['comments'] = array(
                 'class' => 'mod.comments.components.CommentBehavior',
-                'model' => 'mod.shop.models.ShopProduct',
                 'owner_title' => 'title', // Attribute name to present comment owner in admin panel
             );
         }
