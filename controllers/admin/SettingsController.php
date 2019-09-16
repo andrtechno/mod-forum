@@ -20,7 +20,9 @@ class SettingsController extends \panix\engine\controllers\AdminController {
 
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
-            $model->save();
+            if ($model->validate()) {
+                $model->save();
+            }
             $this->refresh();
         }
 
