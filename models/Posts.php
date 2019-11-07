@@ -18,32 +18,12 @@ class Posts extends ActiveRecord {
         return '{{%forum__posts}}';
     }
 
-    public function scopes2() {
-        return CMap::mergeArray(array(
-                    'latast' => array(
-                        'order' => 'date_create DESC'
-                    ),
-                        ), parent::scopes());
-    }
+
 
     public function getUrl() {
         return ['/news/default/view', 'slug' => $this->slug];
     }
 
-    /**
-     * Find news by url.
-     * Scope.
-     * @param string News url
-     * @return News
-     */
-    public function withUrl($url) {
-        $this->getDbCriteria()->mergeWith(array(
-            'condition' => 'slug=:url',
-            'params' => array(':url' => $url)
-        ));
-
-        return $this;
-    }
 
     public function afterSave($insert, $changedAttributes) {
 
@@ -75,10 +55,12 @@ class Posts extends ActiveRecord {
     public function getUser() {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
-    
-     public function getUserEdit() {
+
+    public function getUserEdit() {
         return $this->hasOne(User::class, ['id' => 'edit_user_id']);
     }
+
+
     /**
      * @return array relational rules.
      */

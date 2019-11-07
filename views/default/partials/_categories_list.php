@@ -5,14 +5,14 @@ use panix\engine\CMS;
 ?>
 <tr>
     <td>
-        <?= Html::a($data->name, $data->getUrl()) ?> <?= Html::a('<i class="icon-add"></i>', ['/forum/default/addCat', 'parent_id' => $data->id], array('class' => 'btn2 btn-xs2 btn-success')) ?>
+        <?= Html::a($data->name, $data->getUrl()) ?> <?= Html::a('<i class="icon-add"></i>', ['/forum/default/add-cat', 'parent_id' => $data->id], ['class' => 'btn btn-sm btn-success']) ?>
         <div class="help-block"><?= $data->hint ?></div>
 
 
     </td>
     <td width="15%" class="text-right">
-        <div><b><?= $data->count_topics ?>1111111111111</b> <?= Yii::t('forum/default', 'TOPICS', ['n'=>$data->count_topics]); ?>яя</div>
-        <div><b><?= $data->count_posts ?>1111111111111111111</b> <?= Yii::t('forum/default', 'POSTS', ['n'=>$data->count_posts]); ?>яя</div>
+        <div><b><?= $data->count_topics ?></b> <?= Yii::t('forum/default', 'TOPICS', ['n'=>$data->count_topics]); ?>яя</div>
+        <div><b><?= $data->count_posts ?></b> <?= Yii::t('forum/default', 'POSTS', ['n'=>$data->count_posts]); ?>яя</div>
     </td>
     <td width="20%">
 

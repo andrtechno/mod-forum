@@ -1,4 +1,5 @@
 <?php
+
 namespace panix\mod\forum\controllers;
 
 use Yii;
@@ -6,7 +7,8 @@ use panix\mod\forum\models\Categories;
 use panix\engine\controllers\WebController;
 
 
-class DefaultController extends WebController {
+class DefaultController extends WebController
+{
     public $model;
 
 
@@ -16,7 +18,8 @@ class DefaultController extends WebController {
         return parent::beforeAction($action);
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->model = Categories::find()->roots()->all();
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
         return $this->render('index', array(
@@ -24,7 +27,8 @@ class DefaultController extends WebController {
         ));
     }
 
-    public function actionView($id) {
+    public function actionView($id)
+    {
 
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
         $this->model = Categories::findOne($id);
@@ -37,16 +41,15 @@ class DefaultController extends WebController {
         //$this->dataModel->saveCounters(array('views' => 1));
 
 
-
         $ancestors = $this->model->ancestors()->excludeRoot()->all();
         $this->breadcrumbs[] = [
-            'label'=>$this->pageName,
-            'url'=>['/forum']
-            ];
-        foreach ($ancestors as $c){
+            'label' => $this->pageName,
+            'url' => ['/forum']
+        ];
+        foreach ($ancestors as $c) {
             $this->breadcrumbs[] = [
-                'label'=>$c->name,
-               'url'=>$c->getUrl()
+                'label' => $c->name,
+                'url' => $c->getUrl()
             ];
         }
 
@@ -56,7 +59,8 @@ class DefaultController extends WebController {
         ));
     }
 
-    public function actionAddCat($parent_id) {
+    public function actionAddCat($parent_id)
+    {
         //  if ($new === true)
         //     $model = new ForumCategories;
         // else {
@@ -90,7 +94,8 @@ class DefaultController extends WebController {
         $this->render('addcat', array('model' => $model));
     }
 
-    public function actionQuote() {
+    public function actionQuote()
+    {
         if (Yii::$app->request->isAjax) {
             $result = array();
 

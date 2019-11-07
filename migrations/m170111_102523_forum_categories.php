@@ -18,6 +18,7 @@ use panix\mod\user\models\User;
 
 class m170111_102523_forum_categories extends Migration
 {
+    public $settingsForm = 'panix\mod\forum\models\SettingsForm';
 
     public function up()
     {
@@ -50,6 +51,7 @@ class m170111_102523_forum_categories extends Migration
         $this->createIndex('switch', Categories::tableName(), 'switch');
 
         $this->addColumn(User::tableName(), 'forum_posts_count', $this->integer(11)->defaultValue(0)->unsigned());
+        $this->loadSettings();
         Yii::$app->cache->flush();
     }
 
