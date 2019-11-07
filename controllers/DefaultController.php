@@ -1,7 +1,6 @@
 <?php
 namespace panix\mod\forum\controllers;
 
-use panix\mod\forum\assets\ForumAsset;
 use Yii;
 use panix\mod\forum\models\Categories;
 use panix\engine\controllers\WebController;
@@ -13,7 +12,7 @@ class DefaultController extends WebController {
 
     public function beforeAction($action)
     {
-        ForumAsset::register($this->view);
+
         return parent::beforeAction($action);
     }
 

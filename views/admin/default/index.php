@@ -1,19 +1,21 @@
 <?php
 use panix\mod\forum\models\Categories;
-use panix\mod\forum\models\CategoriesNode;
+use panix\mod\forum\AdminAsset;
 
+AdminAsset::register($this);
 
 echo \panix\ext\jstree\JsTree::widget([
     'id' => 'CategoryTree',
     'name' => 'jstree',
-    'data' => CategoriesNode::fromArray(Categories::findOne(1)->children()->all(), ['switch' => true]),
+    'data' => Categories::find()->dataTree(),
+    // 'data' => CategoriesNode::fromArray(Categories::findOne(1)->children()->all(), ['switch' => true]),
     'core' => [
         'force_text' => true,
         'animation' => 0,
         'strings' => [
             'Loading ...' => Yii::t('app', 'LOADING')
         ],
-        "themes" => ["stripes" => true, 'responsive' => true,"variant" => "large"],
+        "themes" => ["stripes" => true, 'responsive' => true, "variant" => "large"],
         'check_callback' => true
     ],
     'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],

@@ -15,17 +15,18 @@ class DefaultController extends \panix\engine\controllers\AdminController {
         // if (!empty($_GET['ForumCategories']))
         //    $model->attributes = $_GET['ForumCategories'];
 
-        \panix\mod\forum\assets\AdminAsset::register($this->view);
+
         return $this->render('index', array('model' => $model));
     }
 
     /**
      * Create or update new page
-     * @param boolean $new
+     * @param bool $id
+     * @return string|\yii\web\Response
      */
-    public function actionUpdate($new = false) {
-
-        $model = Categories::findModel($_GET['id']);
+    public function actionUpdate($id = false) {
+        /** @var Categories|\panix\engine\behaviors\nestedsets\NestedSetsBehavior $model */
+        $model = Categories::findModel($id);
 
 
 
@@ -34,41 +35,31 @@ class DefaultController extends \panix\engine\controllers\AdminController {
             'label' => $this->module->name,
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = ($model->isNewRecord) ? $model::t('PAGE_TITLE', 0) : Html::encode($model->name);
-        $this->pageName = ($model->isNewRecord) ? $model::t('PAGE_TITLE', 0) : $model::t('PAGE_TITLE', 1);
+        $this->breadcrumbs[] = ($model->isNewRecord) ? $model::t('PAGE_TITLE') : Html::encode($model->name);
+        $this->pageName = ($model->isNewRecord) ? $model::t('PAGE_TITLE') : $model::t('PAGE_TITLE');
 
-        //  $form = new TabForm($model->getForm(), $model);
-        // $form->additionalTabs[$model::t('TAB_IMG')] = array(
-        //      'content' => $this->renderPartial('_image', array('model' => $model), true)
-        // );
-        // $form->additionalTabs[Yii::t('app','TAB_META')] = array(
-        //     'content' => $this->renderPartial('mod.seo.views.admin.default._module_seo', array('model' => $model, 'form' => $form), true)
-        //);
 
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
-            if (isset($_GET['parent_id'])) {
-                $parent = Categories::findOne($_GET['parent_id']);
+            if (Yii::$app->request->get('parent_id')) {
+                $parent = Categories::findOne(Yii::$app->request->get('parent_id'));
             } else {
                 $parent = Categories::findOne(1);
             }
             if ($model->getIsNewRecord()) {
-                $model->appendTo($parent);
+                if($parent){
+                    $model->appendTo($parent);
+                }else{
+                    $model->saveNode();
+                }
+
             } else {
                 $model->saveNode();
             }
-            return $this->redirect(array('index'));
-            /* if(!$this->edit_mode){
-              if($isNewRecord){
-              $this->redirect(array('update','id'=>$model->id));
-              }else{
+            return $this->redirect(['index']);
 
-              $this->redirect(array('index'));
-
-              }
-              } */
         }
-        return $this->render('update', array('model' => $model));
+        return $this->render('update', ['model' => $model]);
     }
 
     public function actionDeleteFile() {

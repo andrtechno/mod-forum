@@ -1,8 +1,11 @@
 <?php
 use panix\engine\Html;
 use panix\mod\user\models\User;
+use panix\mod\forum\ForumAsset;
 
+ForumAsset::register($this);
 $total_posts = 0;
+
 ?>
 <div class="forum">
     <h1><?= $this->context->pageName; ?></h1>
