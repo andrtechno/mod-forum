@@ -5,7 +5,7 @@ use panix\mod\forum\AdminAsset;
 AdminAsset::register($this);
 
 echo \panix\ext\jstree\JsTree::widget([
-    'id' => 'CategoryTree',
+    'id' => 'CategoriesTree',
     'name' => 'jstree',
     'data' => Categories::find()->dataTree(),
     // 'data' => CategoriesNode::fromArray(Categories::findOne(1)->children()->all(), ['switch' => true]),
@@ -21,7 +21,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
     'contextmenu' => [
         'items' => new yii\web\JsExpression('function($node) {
-                var tree = $("#jsTree_CategoryTree").jstree(true);
+                var tree = $("#jsTree_CategoriesTree").jstree(true);
                 return {
                     "Switch": {
                         "icon":"icon-eye",

@@ -1,9 +1,9 @@
-
-$('#ForumCategoriesTree').bind('move_node.jstree', function (node, parent) {
+var tree = $('#jsTree_CategoriesTree');
+tree.bind('move_node.jstree', function (node, parent) {
     var xhr = $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: '/admin/forum/default/moveNode',
+        url: common.url('/admin/forum/default/move-node'),
         data: {
             'id': parent.node.id.replace('node_', ''),
             'ref': parent.parent.replace('node_', ''),
@@ -12,11 +12,11 @@ $('#ForumCategoriesTree').bind('move_node.jstree', function (node, parent) {
     });
 });
 
-$('#ForumCategoriesTree').bind('rename_node.jstree', function (node, text) {
+tree.bind('rename_node.jstree', function (node, text) {
     if (text.old !== text.text) {
         var xhr = $.ajax({
             type: 'GET',
-            url: "/admin/forum/default/renameNode",
+            url: common.url("/admin/forum/default/rename-node"),
             dataType: 'json',
             data: {
                 "id": text.node.id.replace('node_', ''),
@@ -35,11 +35,11 @@ $('#ForumCategoriesTree').bind('rename_node.jstree', function (node, text) {
     }
 });
 //Need dev.replace(/-/g,'')
-$('#ForumCategoriesTree').bind('create_node.jstree', function (node, parent, position) {
+tree.bind('create_node.jstree', function (node, parent, position) {
 
     var xhr = $.ajax({
         type: 'GET',
-        url: "/admin/forum/default/createNode",
+        url: common.url("/admin/forum/default/create-node"),
         dataType: 'json',
         data: {
             text: parent.node.text,
@@ -57,11 +57,11 @@ $('#ForumCategoriesTree').bind('create_node.jstree', function (node, parent, pos
     });
 });
 
-$('#ForumCategoriesTree').bind("delete_node.jstree", function (node, parent) {
+tree.bind("delete_node.jstree", function (node, parent) {
     var xhr = $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: "/admin/forum/default/delete",
+        url: common.url("/admin/forum/default/delete-node"),
         data: {
             "id": parent.node.id.replace('node_', '')
         }
@@ -71,7 +71,7 @@ $('#ForumCategoriesTree').bind("delete_node.jstree", function (node, parent) {
 function categorySwitch(node) {
     var xhr = $.ajax({
         type: 'GET',
-        url: "/admin/forum/default/switchNode",
+        url: common.url("/admin/forum/default/switch-node"),
         dataType: 'json',
         data: {
             id: node.id.replace('node_', ''),
@@ -80,7 +80,7 @@ function categorySwitch(node) {
 
             var icon = (data.switch) ? 'icon-eye' : 'icon-eye-close';
             common.notify(data.message, 'success');
-            $('#ForumCategoriesTree').jstree(true).set_icon(node, icon);
+            tree.jstree(true).set_icon(node, icon);
         },
         beforeSend: function () {
             common.addLoader();

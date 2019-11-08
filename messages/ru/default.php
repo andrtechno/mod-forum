@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'CREATE_CATEGORY' => 'Добавить раздел',
     'POSTS' => '<b>{n, plural, =0{ответов нет} =1{ответ} one{ответов} few{ответа} many{ответов} other{# other}}</b>',
     'TOPICS' => '{n, plural, =0{Тема нет} =1{# Тема} one{# Темы} few{# Темы} many{# Тем} other{# other}}',
     'LAST_POST_INFO' => '{title} - последнее сообщение от {username}',

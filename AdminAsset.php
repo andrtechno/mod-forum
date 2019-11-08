@@ -18,5 +18,7 @@ class AdminAsset extends AssetBundle
     public $js = [
         'js/tree.js',
     ];
-
+    public $depends = [
+        'yii\web\JqueryAsset',
+    ];
 }

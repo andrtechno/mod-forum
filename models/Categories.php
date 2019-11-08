@@ -6,13 +6,20 @@ use Yii;
 use panix\engine\db\ActiveRecord;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\mod\forum\models\query\CategoriesQuery;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Categories
  *
  * @property integer $id
+ * @property integer $lft
+ * @property integer $level
+ * @property integer $rgt
  * @property string $name
  * @property string $slug
+ * @property string $full_path
+ * @property string $image
+ * @property boolean $switch
  * @property string $hint
  * @property integer $last_post_user_id
  * @property integer $last_post_id
@@ -30,7 +37,26 @@ class Categories extends ActiveRecord
     const MODULE_ID = 'forum';
     const route = '/forum/admin/default';
 
+    public function rebuildFullPath()
+    {
+        // Create category full path.
+        $ancestors = $this->ancestors()
+            //->orderBy('depth')
+            ->all();
+        if ($ancestors) {
+            // Remove root category from path
+            unset($ancestors[0]);
 
+            $parts = [];
+            foreach ($ancestors as $ancestor)
+                $parts[] = $ancestor->slug;
+
+            $parts[] = $this->slug;
+            $this->full_path = implode('/', array_filter($parts));
+        }
+
+        return $this;
+    }
     /**
      * @return string the associated database table name
      */
@@ -103,7 +129,7 @@ class Categories extends ActiveRecord
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge([
             'tree' => [
                 'class' => NestedSetsBehavior::class,
                 // 'treeAttribute' => 'tree',
@@ -111,7 +137,7 @@ class Categories extends ActiveRecord
                 // 'rightAttribute' => 'rgt',
                 'levelAttribute' => 'level',
             ],
-        ];
+        ], parent::behaviors());
     }
 
 

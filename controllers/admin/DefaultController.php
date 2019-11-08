@@ -2,19 +2,52 @@
 
 namespace panix\mod\forum\controllers\admin;
 
+use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use Yii;
 use panix\engine\Html;
+use panix\engine\CMS;
 use panix\mod\forum\models\Categories;
 use panix\engine\controllers\AdminController;
+use yii\web\Response;
 
 class DefaultController extends AdminController {
+
+
+    public function actions()
+    {
+        return [
+            'rename-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\RenameNodeAction',
+                'modelClass' => Categories::class,
+            ],
+            'move-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
+                'modelClass' => Categories::class,
+            ],
+            'switch-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\SwitchNodeAction',
+                'modelClass' => Categories::class,
+            ],
+            'delete-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
+                'modelClass' => Categories::class,
+            ],
+        ];
+    }
 
     public function actionIndex() {
         $this->pageName = $this->module->name;
         $this->breadcrumbs = array($this->pageName);
         $model = new Categories;
-
-        return $this->render('index', array('model' => $model));
+        $this->buttons = [
+            [
+                'icon' => 'add',
+                'label' => Yii::t('forum/default', 'CREATE_CATEGORY'),
+                'url' => ['create'],
+                'options' => ['class' => 'btn btn-success']
+            ]
+        ];
+        return $this->render('index', ['model' => $model]);
     }
 
     /**
@@ -59,73 +92,107 @@ class DefaultController extends AdminController {
         return $this->render('update', ['model' => $model]);
     }
 
-    public function actionDeleteFile() {
-        echo CJSON::encode(array('success' => 'true', 'key' => $_POST['key']));
-        die;
-    }
-
-    public function actionSwitchNode() {
-        //$switch = $_GET['switch'];
-        $node = Categories::findOne($_GET['id']);
+    /**
+     * @return array
+     */
+    public function actionSwitchNode2() {
+        /**
+         * @var Categories|NestedSetsBehavior $node
+         */
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $node = Categories::findOne(Yii::$app->request->get('id'));
         $node->switch = ($node->switch == 1) ? 0 : 1;
         $node->saveNode();
-        echo \yii\helpers\Json::encode(array(
+        return [
             'switch' => $node->switch,
-            'message' => Yii::t('ShopModule.admin', 'CATEGORY_TREE_SWITCH', $node->switch)
-        ));
-        die;
+            'message' => Yii::t('shop/Category', ($node->switch) ? 'CATEGORY_TREE_SWITCH_OFF' : 'CATEGORY_TREE_SWITCH_ON')
+        ];
     }
 
     /**
      * Drag-n-drop nodes
      */
-    public function actionMoveNode() {
-        $node = Categories::findOne($_GET['id']);
-        $target = Categories::findOne($_GET['ref']);
+    public function actionMoveNode2()
+    {
+        /**
+         * @var NestedSetsBehavior|Categories $node
+         * @var NestedSetsBehavior|Categories $target
+         */
+        $node = Categories::findModel(Yii::$app->request->get('id'));
+        $target = Categories::findOne(Yii::$app->request->get('ref'));
 
-        if ((int) $_GET['position'] > 0) {
-            $pos = (int) $_GET['position'];
+
+        $pos = (int) Yii::$app->request->get('position');
+
+        if ($pos == 1) {
+
             $childs = $target->children()->all();
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1] instanceof ForumCategories && $childs[$pos - 1]['id'] != $node->id)
+            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
+                // die('moveAfter');
                 $node->moveAfter($childs[$pos - 1]);
-        } else
-            $node->moveAsFirst($target);
-
-        $node->rebuildFullPath()->saveNode(false);
-    }
-
-    public function actionRenameNode() {
-
-
-        if (strpos($_GET['id'], 'j1_') === false) {
-            $id = $_GET['id'];
-        } else {
-            $id = str_replace('j1_', '', $_GET['id']);
-        }
-
-        $model = Categories::findOne((int) $id);
-        if ($model) {
-            $model->name = $_GET['text'];
-            $model->slug = CMS::translit($model->name);
-            if ($model->validate()) {
-                $model->saveNode(false, false);
-                $message = Yii::t('shop/admin', 'CATEGORY_TREE_RENAME');
-            } else {
-                $message = $model->getError('slug');
             }
-            echo \yii\helpers\Json::encode(array(
-                'message' => $message
-            ));
-            die;
+        }elseif($pos == 2){
+            $childs = $target->children()
+                //->orderBy(['lft'=>SORT_DESC])
+                ->all();
+            // echo count($childs);die;
+            // if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
+            // die('moveAfter');
+
+
+            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
+                $node->moveAfter($childs[$pos - 1]);
+            }
+
+        } else{
+            $node->moveAsFirst($target);
+        }
+
+        $node->rebuildFullPath();
+        $node->saveNode(false);
+    }
+    public function actionRenameNode2()
+    {
+        /**
+         * @var NestedSetsBehavior|Categories $model
+         */
+        if (strpos(Yii::$app->request->get('id'), 'j1_') === false) {
+            $id = Yii::$app->request->get('id');
+        } else {
+            $id = str_replace('j1_', '', Yii::$app->request->get('id'));
+        }
+
+        $model = Categories::findOne((int)$id);
+        if ($model) {
+            $model->name = Yii::$app->request->get('text');
+            $model->slug = CMS::slug($model->name);
+            if ($model->validate()) {
+                $model->saveNode(false);
+                $success = true;
+                $message = Yii::t('shop/Category', 'CATEGORY_TREE_RENAME');
+            } else {
+                $success = false;
+                $message = Yii::t('shop/Category', 'ERROR_CATEGORY_TREE_RENAME');
+            }
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'message' => $message,
+                'success' => $success
+            ];
+
         }
     }
 
-    public function actionCreateNode() {
+    public function actionCreateNode2() {
+        /**
+         * @var Categories|NestedSetsBehavior $model
+         * @var Categories|NestedSetsBehavior $parent
+         */
         $model = new Categories;
-        $parent = Categories::model()->findByPk((int) $_GET['parent_id']);
+        $parent = Categories::findOne((int) $_GET['parent_id']);
 
         $model->name = $_GET['text'];
-        $model->slug = CMS::translit($model->name);
+        $model->slug = CMS::slug($model->name);
         if ($model->validate()) {
 
             $model->appendTo($parent);
@@ -140,11 +207,11 @@ class DefaultController extends AdminController {
     }
 
     /**
-     * @param $id
-     * @throws CHttpException
+     * @param integer $id
      */
-    public function actionDelete($id) {
-        $model = Categories::model()->findByPk($id);
+    public function actionDelete2($id) {
+        /** @var Categories|NestedSetsBehavior $model */
+        $model = Categories::findOne($id);
 
         //Delete if not root node
         if ($model && $model->id != 1) {
@@ -157,6 +224,7 @@ class DefaultController extends AdminController {
 
     //TODO need multi language add and test
     public function actionCreateRoot() {
+        /** @var Categories|NestedSetsBehavior $model */
         $model = new Categories;
         $model->name = 'Каталог продукции';
         $model->lft = 1;
@@ -167,17 +235,17 @@ class DefaultController extends AdminController {
         $model->image = NULL;
         $model->switch = 1;
         $model->saveNode();
-        $this->redirect(array('create'));
+        return $this->redirect(['create']);
     }
 
     public function getAddonsMenu() {
-        return array(
-            array(
+        return [
+            [
                 'label' => Yii::t('app', 'SETTINGS'),
-                'url' => array('/admin/forum/settings/index'),
+                'url' => ['/admin/forum/settings/index'],
                 'icon' => Html::icon('icon-settings'),
-            ),
-        );
+            ],
+        ];
     }
 
 }
