@@ -66,8 +66,8 @@ class DefaultController extends AdminController {
             'label' => $this->module->name,
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = ($model->isNewRecord) ? $model::t('PAGE_TITLE') : Html::encode($model->name);
-        $this->pageName = ($model->isNewRecord) ? $model::t('PAGE_TITLE') : $model::t('PAGE_TITLE');
+        $this->breadcrumbs[] = ($model->isNewRecord) ? $model::t('CREATE_CATEGORY') : Html::encode($model->name);
+        $this->pageName = ($isNewRecord) ? $model::t('CREATE_CATEGORY') : $model::t('UPDATE_CATEGORY');
 
 
         $post = Yii::$app->request->post();

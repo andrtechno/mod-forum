@@ -136,6 +136,7 @@ class Categories extends ActiveRecord
                 // 'leftAttribute' => 'lft',
                 // 'rightAttribute' => 'rgt',
                 'levelAttribute' => 'level',
+                'hasManyRoots'=>true
             ],
         ], parent::behaviors());
     }

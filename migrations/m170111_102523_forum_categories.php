@@ -27,6 +27,7 @@ class m170111_102523_forum_categories extends Migration
             'lft' => $this->integer(11)->notNull()->unsigned(),
             'rgt' => $this->integer(11)->notNull()->unsigned(),
             'level' => $this->smallInteger(5)->notNull()->unsigned(),
+            'tree' => $this->integer(11)->null()->unsigned(),
             'name' => $this->string(255)->null(),
             'hint' => $this->text()->null(),
             'slug' => $this->string(255)->null(),
@@ -45,6 +46,7 @@ class m170111_102523_forum_categories extends Migration
 
         $this->createIndex('lft', Categories::tableName(), 'lft');
         $this->createIndex('rgt', Categories::tableName(), 'rgt');
+        $this->createIndex('tree', Categories::tableName(), 'tree');
         $this->createIndex('level', Categories::tableName(), 'level');
         $this->createIndex('full_path', Categories::tableName(), 'full_path');
         $this->createIndex('views', Categories::tableName(), 'views');
