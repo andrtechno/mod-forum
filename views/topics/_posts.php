@@ -2,16 +2,21 @@
 use panix\engine\CMS;
 use panix\engine\Html;
 
+/**
+ * @var \panix\mod\forum\models\Posts $model
+ */
+
+
 ?>
-<div class="card panel-default forum-post" name="post-<?= ($index + 1) ?>" id="post-<?= ($index + 1) ?>">
+<div class="card forum-post" name="post-<?= ($index + 1) ?>" id="post-<?= ($index + 1) ?>">
     <div class="card-header clearfix">
         <div class="float-left">
-            <?= ($model->user) ? $model->user->username : Yii::t('app', Yii::$app->user->guestName); ?>
+
             <small class="help-block"><?= Yii::t('forum/default', 'POST_DATE'); ?> <?= CMS::date($model->created_at, true); ?></small>
         </div>
         <div class="float-right">
             <?php if (Yii::$app->user->can('admin')) { ?>
-                <?= CMS::ip('195.78.247.104');//$model->ip_create  ?>
+                <?= CMS::ip($model->ip_create); ?>
             <?php } ?>
             <input type="checkbox" name="ads" class=""/>
             <?= Html::a('#' . ($index + 1), '#post-' . ($index + 1)); ?>
@@ -23,12 +28,15 @@ use panix\engine\Html;
                     'aria-expanded' => 'true',
                     'aria-haspopup' => 'true',
                     'data-toggle' => 'dropdown',
-                    'id' => 'dropdown-share-'.$index,
+                    'id' => 'dropdown-share-' . $index,
                     'style' => 'padding:0;'
                 ]); ?>
-                <div class="dropdown-menu" aria-labelledby="dropdown-share-<?= $index;?>">
-                    <a class="dropdown-item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=3333link"><i class="icon-facebook"></i> Facebook</a>
-                    <a class="dropdown-item" target="_blank" href="http://twitter.com/share?text=text goes here&url=http://url goes here&hashtags=hashtag1,hashtag2,hashtag3"><i class="icon-twitter"></i> Twitter</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown-share-<?= $index; ?>">
+                    <a class="dropdown-item" target="_blank"
+                       href="https://www.facebook.com/sharer/sharer.php?u=3333link"><i class="icon-facebook"></i> Facebook</a>
+                    <a class="dropdown-item" target="_blank"
+                       href="http://twitter.com/share?text=text goes here&url=http://url goes here&hashtags=hashtag1,hashtag2,hashtag3"><i
+                                class="icon-twitter"></i> Twitter</a>
                     <a class="dropdown-item" target="_blank" href="#"><i class="icon-instagram"></i> Instagram</a>
                 </div>
             </span>
@@ -41,20 +49,11 @@ use panix\engine\Html;
             <div class="col-md-2 col-sm-3 col-xs-4 text-center">
 
                 <div style="margin:0 auto;">
-
-                    <?php if ($model->user) { ?>
-                        <?php //echo Html::img($model->user->getAvatarUrl("100x100"), $model->user->username, array('class' => 'img-thumbnail')) ?>
-
-                    <?php } else { ?>
-
-                        <?php //echo Html::img(Yii::$app->user->getAvatarUrl("100x100", true), Yii::$app->user->guestName, array('class' => 'img-thumbnail')) ?>
-
-
-                    <?php } ?>
-
+                    <?= Html::img($model->userAvatar, ['class' => 'img-thumbnail', 'alt' => $model->userName]) ?>
                 </div>
+                <div><?= $model->userName; ?></div>
                 <?php if ($model->user) { ?>
-                    <div>zzzzzzzzzzzzzzzzzzzzzz</div>
+
                     <div><?= Yii::t('forum/default', 'MESSAGES', ['num' => $model->user->forum_posts_count]) ?></div>
                 <?php } ?>
 
@@ -79,7 +78,11 @@ use panix\engine\Html;
             <?= Html::a('Ответить', ['/forum/quote', 'post_id' => $model->id], ['class' => 'quote btn btn-sm btn-default']); ?>
 
         <?php } ?>
-
+        <?php
+        echo \panix\engine\widgets\like\LikeWidget::widget([
+            'model' => $model
+        ]);
+        ?>
         <?php if ($model->isEditPost()) { ?>
 
             <?php

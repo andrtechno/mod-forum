@@ -13,6 +13,9 @@ use panix\engine\db\ActiveRecord;
  * @property integer $topic_id
  * @property Topics $topic
  * @property string $slug
+ * @property User $user
+ * @property string $userName
+ * @property string $userAvatar
  *
  * @package panix\mod\forum\models
  */
@@ -31,6 +34,12 @@ class Posts extends ActiveRecord
         return '{{%forum__posts}}';
     }
 
+    public function getUserName(){
+        return ($this->user) ? $this->user->username : Yii::t('app', 'GUEST');
+    }
+    public function getUserAvatar(){
+        return ($this->user) ? $this->user->getAvatarUrl("100x100") : Yii::$app->user->getGuestAvatarUrl("100x100");
+    }
 
     public function getUrl()
     {

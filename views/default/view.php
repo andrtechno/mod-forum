@@ -108,11 +108,15 @@ $subCategories = $model->children()->all();
                                         <ul class="pagination pagination-xs">
                                             <?php for ($i = 1; $i <= $num_pages; $i++) { ?>
                                                 <?php if ($i <= 3) { ?>
-                                                    <li><a href="<?= Yii::$app->createUrl('/forum/topics/view', array('id' => $data->id, 'page' => $i)) ?>" title="<?= CMS::date($data->created_at,true,true) ?> <?= $data->title ?> Перейти к странице <?= $i ?>"><?= $i ?></a></li>
+                                                    <li>
+                                                        <?= Html::a($i,['/forum/topics/view','id' => $data->id, 'page' => $i],['title'=>CMS::date($data->created_at,true).' '.$data->title.' Перейти к странице '.$i]); ?>
+                                                    </li>
                                                 <?php } ?>
                                             <?php } ?>
                                             <?php if ($num_pages >= 3) { ?>
-                                                <li><a href="<?= Yii::$app->createUrl('/forum/topics/view', array('id' => $data->id, 'page' => $num_pages)) ?>" title="<?= CMS::date($data->created_at,true,true) ?> <?= $data->title ?> Перейти к странице <?= $num_pages ?>"><?= $num_pages ?> &rarr;</a></li>
+                                                <li>
+                                                    <?= Html::a($num_pages.' &rarr;',['/forum/topics/view','id' => $data->id, 'page' => $num_pages],['title'=>CMS::date($data->created_at,true).' '.$data->title.' Перейти к странице '.$num_pages]); ?>
+                                                </li>
                                             <?php } ?>
                                         </ul>
                                     <?php } ?>

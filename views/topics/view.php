@@ -3,6 +3,11 @@ use panix\engine\Html;
 use panix\engine\CMS;
 use panix\engine\widgets\Pjax;
 
+/**
+ * @var \panix\mod\forum\models\Topics $model
+ */
+
+
 ?>
 
 <h1><?= $model->title ?></h1>
@@ -37,9 +42,9 @@ use panix\engine\widgets\Pjax;
     <div class="card">
         <div class="card-header">
             <?php
-            if (count($model->posts) >= 1) {
-                echo Yii::t('forum/default', 'POST_MESSAGES_NUM', ['count' => count($model->posts) - 1]);
-            } elseif (count($model->posts) <= 1) {
+            if ($model->postsCount >= 1) {
+                echo Yii::t('forum/default', 'POST_MESSAGES_NUM', ['n' => $model->postsCount - 1]);
+            } elseif ($model->postsCount <= 1) {
                 echo Yii::t('forum/default', 'POST_MESSAGES_NO');
             } else {
                 echo Yii::t('forum/default', 'POST_MESSAGES_ONE');

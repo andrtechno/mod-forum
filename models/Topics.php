@@ -17,6 +17,9 @@ use panix\engine\db\ActiveRecord;
  * @property integer $updated_at
  * @property integer $created_at
  * @property integer $user_id
+ * @property integer $category_id
+ * @property Posts $posts
+ * @property Posts $postsCount Posts count
  * @property Categories $category
  *
  * @package panix\mod\forum\models

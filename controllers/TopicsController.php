@@ -29,10 +29,13 @@ class TopicsController extends WebController
 
 
         //  $ancestors = $category->ancestors()->excludeRoot()->all();
+
         $this->breadcrumbs[] = [
-            'label' => $this->pageName,
+            'label' => Yii::t('forum/default', 'MODULE_NAME'),
             'url' => ['/forum']
         ];
+
+
         // foreach ($ancestors as $c){
         // $this->breadcrumbs[$c->name] = $c->getUrl();
         //  }
@@ -79,6 +82,15 @@ class TopicsController extends WebController
         if (!$this->model)
             $this->error404();
 
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('forum/default', 'MODULE_NAME'),
+            'url' => ['/forum']
+        ];
+        $this->breadcrumbs[] = [
+            'label' => $this->model->category->name,
+            'url' => $this->model->category->getUrl()
+        ];
+        $this->breadcrumbs[] = $this->model->title;
 
         $this->model->updateCounters(['views' => 1]);
 
@@ -174,24 +186,19 @@ class TopicsController extends WebController
         }
     }
 
-    public function actionEditpost($id)
+    /**
+     * @param $id
+     * @return string
+     */
+    public function actionEditPost($id)
     {
         if (Yii::$app->request->isAjax) {
-
-            $cs = Yii::$app->getClientScript();
-            $cs->scriptMap = array(
-                //  'jquery.yiigridview.js'=>false,
-                // 'jquery.js' => false,
-                //'jquery.min.js' => false,
-                //  'common.js' => false,
-            );
-
-            $result = array();
+            $result = [];
 
             $post = Posts::findOne($id);
             $request = Yii::$app->request;
 
-            if ($request->isPost && $request->isAjax) { // && $request->isAjaxRequest
+            if ($request->isPost && $request->isAjax) {
                 $post->attributes = $request->post('Posts');
                 if (!empty($post->edit_reason)) {
                     $post->edit_user_id = Yii::$app->user->getId();
