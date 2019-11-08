@@ -2,13 +2,22 @@
 
 namespace panix\mod\forum\controllers;
 
+use panix\engine\Html;
 use Yii;
 use panix\mod\forum\models\Topics;
 use panix\mod\forum\models\Categories;
 use panix\mod\forum\models\Posts;
-class TopicsController extends \panix\engine\controllers\WebController {
+use panix\engine\controllers\WebController;
+use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
+use yii\web\Response;
+
+class TopicsController extends WebController
+{
     public $model;
-    public function actionAdd($id) {
+
+    public function actionAdd($id)
+    {
 
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
 
@@ -19,49 +28,50 @@ class TopicsController extends \panix\engine\controllers\WebController {
         $category = Categories::findOne($id);
 
 
-      //  $ancestors = $category->ancestors()->excludeRoot()->all();
+        //  $ancestors = $category->ancestors()->excludeRoot()->all();
         $this->breadcrumbs[] = [
-            'label'=>$this->pageName,
-            'url'=>['/forum']
-];
-       // foreach ($ancestors as $c){
-           // $this->breadcrumbs[$c->name] = $c->getUrl();
-      //  }
+            'label' => $this->pageName,
+            'url' => ['/forum']
+        ];
+        // foreach ($ancestors as $c){
+        // $this->breadcrumbs[$c->name] = $c->getUrl();
+        //  }
         $this->breadcrumbs[] = $category->name;
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
-                if ($model->save()) {
+            if ($model->save()) {
 
 
-                    $post = new Posts;
-                    $post->topic_id = $model->id;
-                    $post->text = $model->text;
-                    $post->save(false);
+                $post = new Posts;
+                $post->topic_id = $model->id;
+                $post->text = $model->text;
+                $post->save(false);
 
-                    $model->category->count_topics++;
-                    $model->category->last_post_user_id = $post->user_id;
-                    $model->category->last_post_id = $post->id;
-                    $model->category->last_topic_id = $model->id;
+                $model->category->count_topics++;
+                $model->category->last_post_user_id = $post->user_id;
+                $model->category->last_post_id = $post->id;
+                $model->category->last_topic_id = $model->id;
 
-                    $model->category->saveNode(false);
-                    $ancestors = $model->category->ancestors()->all();
-                    if ($ancestors) {
-                        foreach ($ancestors as $category) {
-                            $category->count_topics++;
-                            $category->last_post_user_id = $post->user_id;
-                            $category->last_post_id = $post->id;
-                            $category->last_topic_id = $model->id;
-                            $category->saveNode(false);
-                        }
+                $model->category->saveNode(false);
+                $ancestors = $model->category->ancestors()->all();
+                if ($ancestors) {
+                    foreach ($ancestors as $category) {
+                        $category->count_topics++;
+                        $category->last_post_user_id = $post->user_id;
+                        $category->last_post_id = $post->id;
+                        $category->last_topic_id = $model->id;
+                        $category->saveNode(false);
                     }
                 }
-                return $this->redirect(array('/forum/default/view', 'id' => $_GET['id']));
-        
+            }
+            return $this->redirect(['/forum/default/view', 'id' => $_GET['id']]);
+
         }
         return $this->render('addtopic', array('model' => $model, 'category' => $category));
     }
 
-    public function actionView($id) {
+    public function actionView($id)
+    {
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
         $this->model = Topics::findOne($id);
 
@@ -81,11 +91,14 @@ class TopicsController extends \panix\engine\controllers\WebController {
 
 
         $providerPosts = new \yii\data\ArrayDataProvider([
-                    'allModels'=>$this->model->posts, 
-            'pagination' => array(
-                'pageSize' => 10,
-            )
+                'allModels' => $this->model->posts,
+                'pagination' => [
+                    'forcePageParam' => false,
+                    'pageSize' => 10,
+                    'defaultPageSize'=>10,
+                    //'pageSizeLimit' => [1],
                 ]
+            ]
         );
 
         return $this->render('view', array(
@@ -94,55 +107,75 @@ class TopicsController extends \panix\engine\controllers\WebController {
         ));
     }
 
-    public function actionAddreply() {
+    public function actionAddReply()
+    {
+        $result=[];
+        $result['success']=false;
         if (!Yii::$app->user->isGuest) {
             $postModel = new Posts;
-            $view = (Yii::$app->request->isAjax) ? '_form_addreply' : '_form_addreply';
             $request = Yii::$app->request;
-
-            if ($request->isPost && $request->isAjax) { // && $request->isAjaxRequest
-                $postModel->attributes = $request->getPost('ForumPosts');
-
-                if ($postModel->validate()) {
-                    if ($postModel->save()) {
-
-                       // $postModel->topic->update_at = date('Y-m-d H:i:s', CMS::time());
-                        $postModel->topic->save(false);
-
-                        $postModel->topic->category->last_post_user_id = $postModel->user_id;
-                        $postModel->topic->category->last_post_id = $postModel->id;
-                        $postModel->topic->category->last_topic_id = $postModel->topic_id;
-
-                        $postModel->topic->category->count_posts++;
+            $view = ($request->isAjax) ? '_form_addreply' : '_form_addreply';
 
 
-                        $postModel->topic->category->saveNode(false, false, false);
-                        $ancestors = $postModel->topic->category->ancestors()->findAll();
-                        if ($ancestors) {
-                            foreach ($ancestors as $category) {
-                                $category->last_post_user_id = $postModel->user_id;
-                                $category->last_post_id = $postModel->id;
-                                $category->last_topic_id = $postModel->topic_id;
-                                $category->count_posts++;
-                                $category->saveNode(false);
-                            }
+            if ($request->isPost && $request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($postModel->load($request->post())) {
+                    if ($postModel->validate()) {
+
+
+                        if ($postModel->save()) {
+                            /**
+                             * @var Topics $topic
+                             * @var Categories $categoryData
+                             */
+                            $topic = $postModel->topic;
+                            $postModel->save(false);
+                            $categoryData = $topic->category;
+
+
+                            $categoryData->last_post_user_id = $postModel->user_id;
+                            $categoryData->last_post_id = $postModel->id;
+                            $categoryData->last_topic_id = $postModel->topic_id;
+                            $categoryData->count_posts++;
+
+
+                            $categoryData->saveNode();
+                            /*$ancestors = $categoryData->ancestors()->findAll();
+                            if ($ancestors) {
+                                foreach ($ancestors as $category) {
+                                    / @var Categories $category /
+                                    $category->last_post_user_id = $postModel->user_id;
+                                    $category->last_post_id = $postModel->id;
+                                    $category->last_topic_id = $postModel->topic_id;
+                                    $category->count_posts++;
+                                    $category->saveNode();
+                                }
+                            }*/
+                            $result['message']='success';
+                            $result['success']=true;
                         }
+                    } else {
+                        $result['message']='error';
+                        $result['errors']=$postModel->getErrors();
                     }
-                    Yii::$app->user->setFlash('success', 'Success!!!');
-                } else {
-                    print_r($postModel->getErrors());
-                    die;
+
+                }else{
+                    $result['message']='no load data post';
                 }
-                $this->render($view, array(
-                    'model' => $postModel
-                ));
+                return $result;
+                //return $this->render($view, [
+                //    'model' => $postModel
+                //]);
+            } else {
+                throw new ForbiddenHttpException('only ajax');
             }
         } else {
-            throw new Exception('NOPauth');
+            throw new ForbiddenHttpException();
         }
     }
 
-    public function actionEditpost($id) {
+    public function actionEditpost($id)
+    {
         if (Yii::$app->request->isAjax) {
 
             $cs = Yii::$app->getClientScript();
@@ -150,7 +183,7 @@ class TopicsController extends \panix\engine\controllers\WebController {
                 //  'jquery.yiigridview.js'=>false,
                 // 'jquery.js' => false,
                 //'jquery.min.js' => false,
-              //  'common.js' => false,
+                //  'common.js' => false,
             );
 
             $result = array();
@@ -167,8 +200,8 @@ class TopicsController extends \panix\engine\controllers\WebController {
                     if ($post->save()) {
                         $result['post'] = $this->renderPartial('_posts_content', array(
                             'data' => $post
-                                ), true, false);
-                        $result['message'] = Yii::t('forum/default','POST_EDITED');
+                        ), true, false);
+                        $result['message'] = Yii::t('forum/default', 'POST_EDITED');
                         $result['id'] = $id;
                         echo CJSON::encode($result);
                         Yii::$app->end();
@@ -177,7 +210,7 @@ class TopicsController extends \panix\engine\controllers\WebController {
             }
             return $this->render('_form_editpost', array(
                 'model' => $post
-                    ), false, true);
+            ), false, true);
         } else {
             throw new CHttpException(500);
         }

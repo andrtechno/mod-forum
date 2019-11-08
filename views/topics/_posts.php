@@ -7,6 +7,7 @@ use panix\engine\Html;
     <div class="card-header clearfix">
         <div class="float-left">
             <?= ($model->user) ? $model->user->username : Yii::t('app', Yii::$app->user->guestName); ?>
+            <small class="help-block"><?= Yii::t('forum/default', 'POST_DATE'); ?> <?= CMS::date($model->created_at, true); ?></small>
         </div>
         <div class="float-right">
             <?php if (Yii::$app->user->can('admin')) { ?>
@@ -59,7 +60,7 @@ use panix\engine\Html;
 
             </div>
             <div class="col-md-10 col-sm-9 col-xs-8">
-                <div class="help-block"><?= Yii::t('forum/default', 'POST_SENDDATE'); ?> <?= CMS::date($model->created_at, true); ?></div>
+
                 <div id="post-edit-ajax-<?= $model->id; ?>">
                     <?php echo $this->render('_posts_content', ['model' => $model]); ?>
 

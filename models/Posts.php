@@ -1,11 +1,23 @@
 <?php
+
 namespace panix\mod\forum\models;
 
 use Yii;
 use panix\mod\user\models\User;
 use panix\engine\db\ActiveRecord;
 
-class Posts extends ActiveRecord {
+/**
+ * Class Posts
+ *
+ * @property integer $id
+ * @property integer $topic_id
+ * @property Topics $topic
+ * @property string $slug
+ *
+ * @package panix\mod\forum\models
+ */
+class Posts extends ActiveRecord
+{
 
     const MODULE_ID = 'forum';
     const route = '/forum/admin/default';
@@ -14,23 +26,25 @@ class Posts extends ActiveRecord {
     /**
      * @return string the associated database table name
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%forum__posts}}';
     }
 
 
-
-    public function getUrl() {
+    public function getUrl()
+    {
         return ['/news/default/view', 'slug' => $this->slug];
     }
 
 
-    public function afterSave($insert, $changedAttributes) {
+    public function afterSave($insert, $changedAttributes)
+    {
 
 
         if (!Yii::$app->user->isGuest) {
             $user = User::findOne($this->user_id);
-           $user->updateCounters(['forum_posts_count' => 1]);
+            $user->updateCounters(['forum_posts_count' => 1]);
         }
 
 
@@ -40,7 +54,8 @@ class Posts extends ActiveRecord {
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['text', 'edit_reason'], 'string'],
             ['text', 'string', 'min' => 3],
@@ -48,26 +63,42 @@ class Posts extends ActiveRecord {
             //['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
             ['text', 'string', 'max' => 255],
             //['edit_user_id, user_id', 'numerical', 'integerOnly' => true],
-          //  ['id, user_id, edit_user_id, edit_reason, edit_datetime, slug, text, full_text, date_update, date_create', 'safe'],
-       ];
+            //  ['id, user_id, edit_user_id, edit_reason, edit_datetime, slug, text, full_text, date_update, date_create', 'safe'],
+        ];
     }
-    
-    public function getUser() {
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    public function getUserEdit() {
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEdit()
+    {
         return $this->hasOne(User::class, ['id' => 'edit_user_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTopic()
+    {
+        return $this->hasOne(Topics::class, ['id' => 'topic_id']);
+    }
 
     /**
      * @return array relational rules.
      */
-    public function relations2() {
+    public function relations2()
+    {
         return array(
-           // 'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-          //  'userEdit' => array(self::BELONGS_TO, 'User', 'edit_user_id'),
+            // 'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+            //  'userEdit' => array(self::BELONGS_TO, 'User', 'edit_user_id'),
             'topic' => array(self::BELONGS_TO, 'ForumTopics', 'topic_id'),
         );
     }
@@ -75,7 +106,8 @@ class Posts extends ActiveRecord {
     /**
      * @return array
      */
-    public function behaviors2() {
+    public function behaviors2()
+    {
         $a = array();
         $a['timeline'] = array(
             'class' => 'app.behaviors.TimelineBehavior',
@@ -97,7 +129,8 @@ class Posts extends ActiveRecord {
         return CMap::mergeArray($a, parent::behaviors());
     }
 
-    public static function getCSort() {
+    public static function getCSort()
+    {
         $sort = new CSort;
         // $sort->defaultOrder = 't.ordern DESC';
         $sort->attributes = array(
@@ -111,17 +144,18 @@ class Posts extends ActiveRecord {
         return $sort;
     }
 
-    public function isEditPost() {
+    public function isEditPost()
+    {
         if (Yii::$app->user->can('admin')) {
             return true;
         } else {
             if ($this->user_id == Yii::app()->user->id) {
-            if (time() < strtotime($this->date_create) + (int) Yii::app()->settings->get('forum', 'edit_post_time') * 60) {
-                return true;
+                if (time() < strtotime($this->date_create) + (int)Yii::app()->settings->get('forum', 'edit_post_time') * 60) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-                return false;
-            }
-            }else{
                 return false;
             }
         }

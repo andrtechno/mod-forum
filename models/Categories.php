@@ -13,6 +13,13 @@ use panix\mod\forum\models\query\CategoriesQuery;
  * @property integer $id
  * @property string $name
  * @property string $slug
+ * @property string $hint
+ * @property integer $last_post_user_id
+ * @property integer $last_post_id
+ * @property integer $last_topic_id
+ * @property integer $updated_at
+ * @property integer $created_at
+ * @property integer $count_posts
  *
  * @package panix\mod\forum\models
  */

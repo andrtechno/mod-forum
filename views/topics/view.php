@@ -1,6 +1,7 @@
 <?php
 use panix\engine\Html;
 use panix\engine\CMS;
+use panix\engine\widgets\Pjax;
 
 ?>
 
@@ -20,10 +21,10 @@ use panix\engine\CMS;
                 <a class="dropdown-item" href="#"><i class="icon-move"></i> Переместить тему</a>
                 <div class="dropdown-item" role="separator"></div>
                 <a class="dropdown-item" href="#">Объединить тему</a>
-               <a class="dropdown-item" href="#">Скрыть</a>
+                <a class="dropdown-item" href="#">Скрыть</a>
                 <a class="dropdown-item" href="#">Посмотреть историю (опция администратора)</a>
                 <a class="dropdown-item" href="#">Отписать всех от этой темы</a>
-                <a  class="dropdown-item" href="#"><i class="icon-delete"></i> <?= Yii::t('app', 'DELETE') ?></a>
+                <a class="dropdown-item" href="#"><i class="icon-delete"></i> <?= Yii::t('app', 'DELETE') ?></a>
             </div>
             <?php if ($model->is_close) { ?>
                 <a href="#" class="btn btn-danger"><i class="icon-locked"></i> Закрыта (нажмите для ответа)</a>
@@ -43,6 +44,7 @@ use panix\engine\CMS;
             } else {
                 echo Yii::t('forum/default', 'POST_MESSAGES_ONE');
             }
+
             ?>
 
         </div>
@@ -50,24 +52,16 @@ use panix\engine\CMS;
 
 
             <?php
-
-            echo yii\widgets\ListView::widget([
+            Pjax::begin([
+                'id' => 'pjax-posts-list',
+            ]);
+            echo \panix\engine\widgets\ListView::widget([
+                'id' => 'posts-list',
                 'dataProvider' => $providerPosts,
                 'itemView' => '_posts',
             ]);
+            Pjax::end();
 
-            /* $this->widget('ListView', array(
-                 'dataProvider' => $providerPosts,
-                 'id' => 'topic-list',
-                 'ajaxUpdate' => true,
-                 'template' => '{items} {pager}',
-                 'itemView' => '_posts',
-                 'pagerCssClass' => 'page text-center',
-                 'enableHistory' => true,
-                 'pager' => array(
-                     'header' => '',
-                 ),
-             ));*/
             ?>
 
 
