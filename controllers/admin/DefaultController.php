@@ -92,97 +92,6 @@ class DefaultController extends AdminController {
         return $this->render('update', ['model' => $model]);
     }
 
-    /**
-     * @return array
-     */
-    public function actionSwitchNode2() {
-        /**
-         * @var Categories|NestedSetsBehavior $node
-         */
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $node = Categories::findOne(Yii::$app->request->get('id'));
-        $node->switch = ($node->switch == 1) ? 0 : 1;
-        $node->saveNode();
-        return [
-            'switch' => $node->switch,
-            'message' => Yii::t('shop/Category', ($node->switch) ? 'CATEGORY_TREE_SWITCH_OFF' : 'CATEGORY_TREE_SWITCH_ON')
-        ];
-    }
-
-    /**
-     * Drag-n-drop nodes
-     */
-    public function actionMoveNode2()
-    {
-        /**
-         * @var NestedSetsBehavior|Categories $node
-         * @var NestedSetsBehavior|Categories $target
-         */
-        $node = Categories::findModel(Yii::$app->request->get('id'));
-        $target = Categories::findOne(Yii::$app->request->get('ref'));
-
-
-        $pos = (int) Yii::$app->request->get('position');
-
-        if ($pos == 1) {
-
-            $childs = $target->children()->all();
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
-                // die('moveAfter');
-                $node->moveAfter($childs[$pos - 1]);
-            }
-        }elseif($pos == 2){
-            $childs = $target->children()
-                //->orderBy(['lft'=>SORT_DESC])
-                ->all();
-            // echo count($childs);die;
-            // if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
-            // die('moveAfter');
-
-
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
-                $node->moveAfter($childs[$pos - 1]);
-            }
-
-        } else{
-            $node->moveAsFirst($target);
-        }
-
-        $node->rebuildFullPath();
-        $node->saveNode(false);
-    }
-    public function actionRenameNode2()
-    {
-        /**
-         * @var NestedSetsBehavior|Categories $model
-         */
-        if (strpos(Yii::$app->request->get('id'), 'j1_') === false) {
-            $id = Yii::$app->request->get('id');
-        } else {
-            $id = str_replace('j1_', '', Yii::$app->request->get('id'));
-        }
-
-        $model = Categories::findOne((int)$id);
-        if ($model) {
-            $model->name = Yii::$app->request->get('text');
-            $model->slug = CMS::slug($model->name);
-            if ($model->validate()) {
-                $model->saveNode(false);
-                $success = true;
-                $message = Yii::t('shop/Category', 'CATEGORY_TREE_RENAME');
-            } else {
-                $success = false;
-                $message = Yii::t('shop/Category', 'ERROR_CATEGORY_TREE_RENAME');
-            }
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return [
-                'message' => $message,
-                'success' => $success
-            ];
-
-        }
-    }
-
     public function actionCreateNode2() {
         /**
          * @var Categories|NestedSetsBehavior $model
@@ -206,21 +115,6 @@ class DefaultController extends AdminController {
         die;
     }
 
-    /**
-     * @param integer $id
-     */
-    public function actionDelete2($id) {
-        /** @var Categories|NestedSetsBehavior $model */
-        $model = Categories::findOne($id);
-
-        //Delete if not root node
-        if ($model && $model->id != 1) {
-            foreach (array_reverse($model->descendants()->all()) as $subCategory) {
-                $subCategory->deleteNode();
-            }
-            $model->deleteNode();
-        }
-    }
 
     //TODO need multi language add and test
     public function actionCreateRoot() {
