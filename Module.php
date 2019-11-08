@@ -25,7 +25,7 @@ class Module extends WebModule implements BootstrapInterface
     {
         $app->urlManager->addRules(
             [
-                //'forum' => 'forum/default/index',
+                'forum' => 'forum/default/index',
                 //'forum/quote/*' => 'forum/default/quote',
 
                 //topics

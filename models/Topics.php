@@ -18,6 +18,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $created_at
  * @property integer $user_id
  * @property integer $category_id
+ * @property integer $last_post_id
  * @property Posts $posts
  * @property Posts $postsCount Posts count
  * @property Categories $category

@@ -1,11 +1,9 @@
 <?php
 
 return [
-    'POSTS' => '{n, plural, =0{ответов нет} =1{ответ} one{ответов} few{ответа} many{ответов} other{# other}}',
+    'POSTS' => '<b>{n, plural, =0{ответов нет} =1{ответ} one{ответов} few{ответа} many{ответов} other{# other}}</b>',
     'TOPICS' => '{n, plural, =0{Тема нет} =1{# Тема} one{# Темы} few{# Темы} many{# Тем} other{# other}}',
-
-    'MESSAGES_NUM' => '{n, plural, =0{Ответов в теме нет} =1{# Тема} one{# Темы} few{# Темы} many{# Тем} other{# other}}',
-
+    'LAST_POST_INFO' => '{title} - последнее сообщение от {username}',
     'MODULE_NAME' => 'Форум',
     'MODULE_DESC' => 'Форум сайта.',
     'REPLY' => 'Ответить',

@@ -5,16 +5,14 @@ namespace panix\mod\forum\controllers\admin;
 use Yii;
 use panix\engine\Html;
 use panix\mod\forum\models\Categories;
+use panix\engine\controllers\AdminController;
 
-class DefaultController extends \panix\engine\controllers\AdminController {
+class DefaultController extends AdminController {
 
     public function actionIndex() {
         $this->pageName = $this->module->name;
         $this->breadcrumbs = array($this->pageName);
         $model = new Categories;
-        // if (!empty($_GET['ForumCategories']))
-        //    $model->attributes = $_GET['ForumCategories'];
-
 
         return $this->render('index', array('model' => $model));
     }
@@ -52,7 +50,6 @@ class DefaultController extends \panix\engine\controllers\AdminController {
                 }else{
                     $model->saveNode();
                 }
-
             } else {
                 $model->saveNode();
             }

@@ -141,7 +141,11 @@ class TopicsController extends WebController
                              * @var Categories $categoryData
                              */
                             $topic = $postModel->topic;
+
                             $postModel->save(false);
+
+                            $topic->last_post_id=$postModel->id;
+                            $topic->save(false);
                             $categoryData = $topic->category;
 
 
@@ -152,6 +156,10 @@ class TopicsController extends WebController
 
 
                             $categoryData->saveNode();
+
+
+
+
                             /*$ancestors = $categoryData->ancestors()->findAll();
                             if ($ancestors) {
                                 foreach ($ancestors as $category) {

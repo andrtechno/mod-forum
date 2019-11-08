@@ -20,6 +20,7 @@ use panix\mod\forum\models\query\CategoriesQuery;
  * @property integer $updated_at
  * @property integer $created_at
  * @property integer $count_posts
+ * @property Topics $lastPost Relation of [[Topics]]
  *
  * @package panix\mod\forum\models
  */
@@ -94,7 +95,7 @@ class Categories extends ActiveRecord
 
     public function getLastPost()
     {
-        return $this->hasMany(Posts::class, ['id' => 'last_post_id']);
+        return $this->hasOne(Posts::class, ['id' => 'last_post_id']);
     }
 
     /**

@@ -2,6 +2,12 @@
 
 use panix\engine\Html;
 use panix\engine\CMS;
+
+/**
+ * @var \panix\mod\forum\models\Categories $data
+ */
+
+$userAvatar = $data->lastPost->getUserAvatar('32x32');
 ?>
 <tr>
     <td>
@@ -11,34 +17,55 @@ use panix\engine\CMS;
 
     </td>
     <td width="15%" class="text-right">
-        <div><b><?= $data->count_topics ?></b> <?= Yii::t('forum/default', 'TOPICS', ['n'=>$data->count_topics]); ?>яя</div>
-        <div><b><?= $data->count_posts ?></b> <?= Yii::t('forum/default', 'POSTS', ['n'=>$data->count_posts]); ?>яя</div>
+        <div>
+            <?= Yii::t('forum/default', 'TOPICS', ['n' => $data->count_topics]); ?>
+        </div>
+        <div>
+            <?= Yii::t('forum/default', 'POSTS', ['n' => $data->count_posts]); ?>
+        </div>
     </td>
     <td width="20%">
 
 
-
         <?php if ($data->topicsCount > 0) { ?>
             <div class="last_post_avatar">
-                <?php if ($data->topics[0]->user) { ?>
-                    <?php echo Html::img($data->topics[0]->user->getAvatarUrl("25x25"), ['alt'=>$data->topics[0]->title . ' - последнее сообщение от ' . $data->topics[0]->user->getDisplayName(),'class' => 'img-thumbnail']) ?>
-                <?php } else { ?>
-                    <?php echo Html::img(Yii::$app->user->getAvatarUrl("25x25", true), ['alt'=>$data->topics[0]->title . ' - последнее сообщение от ' . Yii::$app->user->guestName,'class' => 'img-thumbnail']) ?>
 
-                <?php } ?>
+                <?php
+                if ($data->lastPost->user) {
+                    echo Html::a(Html::img($userAvatar, [
+                        'alt' => Yii::t('forum/default', 'LAST_POST_INFO', [
+                            'title' => $data->topics[0]->title,
+                            'username' => $data->lastPost->userName
+                        ]),
+                        'class' => 'img-thumbnail'
+                    ]), $data->lastPost->user->getProfileUrl());
+                } else {
+                    echo Html::img($userAvatar, [
+                        'alt' => Yii::t('forum/default', 'LAST_POST_INFO', [
+                            'title' => $data->topics[0]->title,
+                            'username' => $data->lastPost->userName
+                        ]),
+                        'class' => 'img-thumbnail'
+                    ]);
+                }
+
+                ?>
+
             </div>
             <div class="last_post">
-                <?php
-                echo Html::a($data->topics[0]->title, $data->topics[0]->getUrl());
-                ?>
-                <br>
-                От <?php echo (isset($data->lastPost->user)) ? Html::a($data->lastPost->user->getDisplayName(), $data->lastPost->user->getProfileUrl()) : 'гость'; ?>
-                <br/>
-                <?php //echo CMS::date($data->lastPost->created_at,true); ?>
+                <div><?= Html::a($data->topics[0]->title, $data->topics[0]->getUrl()); ?></div>
+                <div>
+                    От
+                    <?php
+                    if ($data->lastPost->user) {
+                        echo Html::a($data->lastPost->userName,['/']);
+                    }else{
+                        echo $data->lastPost->userName;
+                    }
+                    ?>
 
-                <?php
-               // print_r($data->lastPost);
-                ?>
+                </div>
+                <div title="<?= CMS::date($data->lastPost->created_at, true); ?>"><?= CMS::date($data->lastPost->created_at, false); ?></div>
             </div>
         <?php } else { ?>
             <span><?= Yii::t('forum/default', 'NO_MESSAGES') ?></span>

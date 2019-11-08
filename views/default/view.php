@@ -37,14 +37,6 @@ $subCategories = $model->children()->all();
 
 
 
-
-
-
-
-
-
-
-
     <?php echo $this->render('partials/_addtopic', array('model' => $model)); ?>
     <div class="clearfix"></div>
 
@@ -64,27 +56,21 @@ $subCategories = $model->children()->all();
                                     <?php if ($data->is_close) { ?>
                                         <i class="icon-locked" title="Тема закрыта"></i>
                                     <?php } ?>
-
                                     <?php if ($data->user_id == Yii::$app->user->id) { ?>
                                         <i class="icon-envelope" style="font-size:24px;"></i>
-
                                     <?php } else { ?>
-
                                         <i class="icon-star" style="font-size:24px;color:#ccc" title="Вы оставили сообщение в этой теме"></i>
-
-
                                     <?php } ?>
 
 
                                 </td>
                                 <td>
                                     <?php if ($data->fixed) { ?>
-                                        <span class="label label-success"><?= Yii::t('forum/default', 'FIXED'); ?></span>
+                                        <span class="badge badge-success"><?= Yii::t('forum/default', 'FIXED'); ?></span>
                                     <?php } ?>
                                     <?php if ($data->user_id == Yii::$app->user->id) { ?>
                                         <?= Html::a('<b>' . $data->title . '</b>', $data->getUrl()) ?>
                                     <?php } else { ?>
-
                                         <?= Html::a($data->title, $data->getUrl()) ?>
                                     <?php } ?>
                                     <br/>
@@ -132,10 +118,6 @@ $subCategories = $model->children()->all();
                                         <?php } else { ?>
                                             ГОСТЬ!
                                         <?php } ?>
-
-
-
-
 
                                         <br/>
                                         <?= CMS::date($data->postsDesc[0]->created_at,true,true); ?>
