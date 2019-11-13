@@ -105,7 +105,7 @@ class DefaultController extends AdminController {
         if ($model->validate()) {
 
             $model->appendTo($parent);
-            $message = Yii::t('ShopModule.admin', 'CATEGORY_TREE_CREATE');
+            $message = Yii::t('shop/admin', 'CATEGORY_TREE_CREATE');
         } else {
             $message = $model->getError('slug');
         }
