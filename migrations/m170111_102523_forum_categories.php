@@ -14,7 +14,6 @@ namespace panix\mod\forum\migrations;
 use Yii;
 use panix\engine\db\Migration;
 use panix\mod\forum\models\Categories;
-use panix\mod\user\models\User;
 
 class m170111_102523_forum_categories extends Migration
 {
@@ -22,6 +21,7 @@ class m170111_102523_forum_categories extends Migration
 
     public function up()
     {
+		$user = Yii::$app->user->identityClass;
         $this->createTable(Categories::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'lft' => $this->integer(11)->notNull()->unsigned(),
@@ -52,15 +52,16 @@ class m170111_102523_forum_categories extends Migration
         $this->createIndex('views', Categories::tableName(), 'views');
         $this->createIndex('switch', Categories::tableName(), 'switch');
 
-        $this->addColumn(User::tableName(), 'forum_posts_count', $this->integer(11)->defaultValue(0)->unsigned());
+        $this->addColumn($user::tableName(), 'forum_posts_count', $this->integer(11)->defaultValue(0)->unsigned());
         $this->loadSettings();
         Yii::$app->cache->flush();
     }
 
     public function down()
     {
+		$user = Yii::$app->user->identityClass;
         $this->dropTable(Categories::tableName());
-        $this->dropColumn(User::tableName(), 'forum_posts_count');
+        $this->dropColumn($user::tableName(), 'forum_posts_count');
         Yii::$app->cache->flush();
     }
 
