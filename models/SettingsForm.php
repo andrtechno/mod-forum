@@ -6,7 +6,9 @@ use panix\engine\SettingsModel;
 
 class SettingsForm extends SettingsModel
 {
+    public static $category = 'forum';
     protected $module = 'forum';
+
     public $pagenum;
     public $edit_post_time;
     public $enable_post_delete;
