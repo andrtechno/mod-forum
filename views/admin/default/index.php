@@ -6,7 +6,6 @@ AdminAsset::register($this);
 
 echo \panix\ext\jstree\JsTree::widget([
     'id' => 'CategoriesTree',
-    'name' => 'jstree',
     'data' => Categories::find()->dataTree(),
     // 'data' => CategoriesNode::fromArray(Categories::findOne(1)->children()->all(), ['switch' => true]),
     'core' => [
