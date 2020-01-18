@@ -102,7 +102,7 @@ use panix\engine\Html;
 
         <?php } ?>
         <?php if (Yii::$app->settings->get('forum', 'enable_post_delete')) { ?>
-            <a class="btn btn-xs btn-link" href="#"><i class="icon-delete"></i> <?= Yii::t('app', 'DELETE') ?></a>
+            <a class="btn btn-xs btn-link" href="#"><i class="icon-delete"></i> <?= Yii::t('app/default', 'DELETE') ?></a>
         <?php } ?>
 
 

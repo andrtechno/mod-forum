@@ -31,7 +31,7 @@ if (!Yii::$app->user->isGuest) {
     <div class="form-group">
 
         <a id="add-post-reply" class=" btn btn-primary"
-           href="javascript:void(0)"><?= Yii::t('app', 'SEND') ?></a>
+           href="javascript:void(0)"><?= Yii::t('app/default', 'SEND') ?></a>
         <?= Html::submitButton('Расширенная форма', ['class' => 'btn btn-default']); ?>
 
     </div>

@@ -29,7 +29,7 @@ use panix\engine\widgets\Pjax;
                 <a class="dropdown-item" href="#">Скрыть</a>
                 <a class="dropdown-item" href="#">Посмотреть историю (опция администратора)</a>
                 <a class="dropdown-item" href="#">Отписать всех от этой темы</a>
-                <a class="dropdown-item" href="#"><i class="icon-delete"></i> <?= Yii::t('app', 'DELETE') ?></a>
+                <a class="dropdown-item" href="#"><i class="icon-delete"></i> <?= Yii::t('app/default', 'DELETE') ?></a>
             </div>
             <?php if ($model->is_close) { ?>
                 <a href="#" class="btn btn-danger"><i class="icon-locked"></i> Закрыта (нажмите для ответа)</a>

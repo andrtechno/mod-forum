@@ -50,7 +50,7 @@ if (!Yii::$app->user->isGuest) {
     </div>
     <div class="form-group">
 
-        <a id="btn-post-edit" data-id="<?= $model->id ?>" class=" btn btn-primary btn-upper" href="javascript:void(0)"><?= Yii::t('app', 'SEND') ?></a>
+        <a id="btn-post-edit" data-id="<?= $model->id ?>" class=" btn btn-primary btn-upper" href="javascript:void(0)"><?= Yii::t('app/default', 'SEND') ?></a>
         <?= Html::submitButton('Расширенная форма', array('class' => 'btn btn-default')); ?>
         или
         <?= Html::a('Отмена', 'javascript:void(0);', array('onClick' => 'test()', 'class' => 'btn btn-link remove-editor')); ?>

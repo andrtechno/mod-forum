@@ -77,7 +77,7 @@ $subCategories = $model->children()->all();
                                     <?php if ($data->user) { ?>
                                         Автор: <?= Html::a($data->user->username, $data->user->getProfileUrl()) ?>,
                                     <?php } else { ?>
-                                        <?= Yii::t('app', Yii::$app->user->guestName); ?>,
+                                        <?= Yii::t('app/default', Yii::$app->user->guestName); ?>,
                                     <?php } ?>
                                     <?= CMS::date($data->created_at,true) ?>
 
@@ -108,7 +108,7 @@ $subCategories = $model->children()->all();
                                     <?php } ?>
                                 </td>
                                 <td width="15%" class="text-right">
-                                    <div><?= Yii::t('app', 'VIEWS', ['n'=>$data->views]); ?></div>
+                                    <div><?= Yii::t('app/default', 'VIEWS', ['n'=>$data->views]); ?></div>
                                     <div><b><?= ($data->postsCount > 0) ? $data->postsCount - 1 : 0 ?></b> <?= Yii::t('forum/default', 'POSTS', ['n'=>($data->postsCount > 0) ? $data->postsCount - 1 : 0]); ?></div>
                                 <td width="20%">
 

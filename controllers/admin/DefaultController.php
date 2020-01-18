@@ -135,7 +135,7 @@ class DefaultController extends AdminController {
     public function getAddonsMenu() {
         return [
             [
-                'label' => Yii::t('app', 'SETTINGS'),
+                'label' => Yii::t('app/default', 'SETTINGS'),
                 'url' => ['/admin/forum/settings/index'],
                 'icon' => Html::icon('icon-settings'),
             ],

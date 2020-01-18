@@ -37,7 +37,7 @@ class Posts extends ActiveRecord
 
     public function getUserName()
     {
-        return ($this->user) ? $this->user->username : Yii::t('app', 'GUEST');
+        return ($this->user) ? $this->user->username : Yii::t('app/default', 'GUEST');
     }
 
     /**

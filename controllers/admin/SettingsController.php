@@ -10,7 +10,7 @@ class SettingsController extends \panix\engine\controllers\AdminController {
     public $topButtons = false;
 
     public function actionIndex() {
-        $this->pageName = Yii::t('app', 'SETTINGS');
+        $this->pageName = Yii::t('app/default', 'SETTINGS');
         /* $this->breadcrumbs = array(
           $this->module->name => $this->module->adminHomeUrl,
           $this->pageName

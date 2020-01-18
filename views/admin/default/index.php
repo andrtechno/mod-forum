@@ -12,7 +12,7 @@ echo \panix\ext\jstree\JsTree::widget([
         'force_text' => true,
         'animation' => 0,
         'strings' => [
-            'Loading ...' => Yii::t('app', 'LOADING')
+            'Loading ...' => Yii::t('app/default', 'LOADING')
         ],
         "themes" => ["stripes" => true, 'responsive' => true, "variant" => "large"],
         'check_callback' => true
@@ -24,7 +24,7 @@ echo \panix\ext\jstree\JsTree::widget([
                 return {
                     "Switch": {
                         "icon":"icon-eye",
-                        "label": "' . Yii::t('app', 'Скрыть показать') . '",
+                        "label": "' . Yii::t('app/default', 'Скрыть показать') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                             categorySwitch($node);
@@ -32,7 +32,7 @@ echo \panix\ext\jstree\JsTree::widget([
                     }, 
                     "Add": {
                         "icon":"icon-add",
-                        "label": "' . Yii::t('app', 'CREATE') . '",
+                        "label": "' . Yii::t('app/default', 'CREATE') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                             console.log($node);
@@ -41,7 +41,7 @@ echo \panix\ext\jstree\JsTree::widget([
                     }, 
                     "Edit": {
                         "icon":"icon-edit",
-                        "label": "' . Yii::t('app', 'UPDATE') . '",
+                        "label": "' . Yii::t('app/default', 'UPDATE') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                            window.location = "/admin/forum/default/update?id="+$node.id.replace("node_", "");
@@ -49,7 +49,7 @@ echo \panix\ext\jstree\JsTree::widget([
                     },  
                     "Rename": {
                         "icon":"icon-rename",
-                        "label": "' . Yii::t('app', 'RENAME') . '",
+                        "label": "' . Yii::t('app/default', 'RENAME') . '",
                         "action": function (obj) {
                             console.log($node);
                             tree.edit($node);
@@ -57,7 +57,7 @@ echo \panix\ext\jstree\JsTree::widget([
                     },                         
                     "Remove": {
                         "icon":"icon-trashcan",
-                        "label": "' . Yii::t('app', 'DELETE') . '",
+                        "label": "' . Yii::t('app/default', 'DELETE') . '",
                         "action": function (obj) { 
                             tree.delete_node($node);
                         }
@@ -108,9 +108,9 @@ $this->widget('ext.jstree.JsTree', array(
                 return {
                     "Switch": {
                         "icon":"icon-eye",
-                        "label": "' . Yii::t('app', 'Скрыть показать') . '",
+                        "label": "' . Yii::t('app/default', 'Скрыть показать') . '",
                         "_disabled":' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.SwitchNode')) ? "false" : "true") . ',
-                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.SwitchNode')) ? Yii::t('app', 'Скрыть показать') : Yii::t('error', '401')) . '",
+                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.SwitchNode')) ? Yii::t('app/default', 'Скрыть показать') : Yii::t('error', '401')) . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                            // console.log($node);
@@ -119,9 +119,9 @@ $this->widget('ext.jstree.JsTree', array(
                     }, 
                     "Add": {
                         "icon":"icon-add",
-                        "label": "' . Yii::t('app', 'CREATE', 0) . '",
+                        "label": "' . Yii::t('app/default', 'CREATE', 0) . '",
                         "_disabled":' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.CreateNode', 'Forum.Default.Create')) ? "false" : "true") . ',
-                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.CreateNode', 'Forum.Default.Create')) ? Yii::t('app', 'CREATE', 0) : Yii::t('error', '401')) . '",
+                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.CreateNode', 'Forum.Default.Create')) ? Yii::t('app/default', 'CREATE', 0) : Yii::t('error', '401')) . '",
                         "action": function (obj) {
                         tree.create_node($node);
                           //  $node = tree.get_node($node);
@@ -130,9 +130,9 @@ $this->widget('ext.jstree.JsTree', array(
                     }, 
                     "Edit": {
                         "icon":"icon-edit",
-                        "label": "' . Yii::t('app', 'UPDATE', 0) . '",
+                        "label": "' . Yii::t('app/default', 'UPDATE', 0) . '",
                         "_disabled":' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.Update')) ? "false" : "true") . ',
-                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.Update')) ? Yii::t('app', 'UPDATE', 0) : Yii::t('error', '401')) . '",
+                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.Update')) ? Yii::t('app/default', 'UPDATE', 0) : Yii::t('error', '401')) . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                            window.location = "/admin/forum/default/update/id/"+$node.id.replace("node_", "");
@@ -140,9 +140,9 @@ $this->widget('ext.jstree.JsTree', array(
                     },  
                     "Rename": {
                         "icon":"icon-rename",
-                        "label": "' . Yii::t('app', 'RENAME') . '",
+                        "label": "' . Yii::t('app/default', 'RENAME') . '",
                         "_disabled":' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.RenameNode')) ? "false" : "true") . ',
-                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.RenameNode')) ? Yii::t('app', 'RENAME') : Yii::t('error', '401')) . '",
+                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.RenameNode')) ? Yii::t('app/default', 'RENAME') : Yii::t('error', '401')) . '",
                         "action": function (obj) {
                             tree.edit($node);
                           
@@ -150,9 +150,9 @@ $this->widget('ext.jstree.JsTree', array(
                     },                         
                     "Remove": {
                         "icon":"icon-trashcan",
-                        "label": "' . Yii::t('app', 'DELETE') . '",
+                        "label": "' . Yii::t('app/default', 'DELETE') . '",
                         "_disabled":' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.Delete')) ? "false" : "true") . ',
-                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.Delete')) ? Yii::t('app', 'DELETE') : Yii::t('error', '401')) . '",
+                        "title":"' . (Yii::app()->user->openAccess(array('Forum.Default.*', 'Forum.Default.Delete')) ? Yii::t('app/default', 'DELETE') : Yii::t('error', '401')) . '",
                         "action": function (obj) { 
                             tree.delete_node($node);
                         }
