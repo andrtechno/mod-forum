@@ -8,7 +8,7 @@ use panix\engine\Html;
 
 
 ?>
-<div class="card forum-post" name="post-<?= ($index + 1) ?>" id="post-<?= ($index + 1) ?>">
+<div class="card bg-dark forum-post" name="post-<?= ($index + 1) ?>" id="post-<?= ($index + 1) ?>">
     <div class="card-header clearfix">
         <div class="float-left">
 

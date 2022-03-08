@@ -16,6 +16,32 @@ class TopicsController extends WebController
 {
     public $model;
 
+    public function actions()
+    {
+        return [
+            'topic-close22' => [
+                'class' => 'panix\mod\forum\actions\TopicCloseAction',
+                'modelClass' => Topics::class,
+            ],
+
+        ];
+    }
+
+    public function actionTopicClose($id)
+    {
+       // if (Yii::$app->user->can('admin')) {
+            $topic = Topics::findOne($id);
+
+            if ($topic) {
+                $topic->is_close = ($topic->is_close) ? 0 : 1;
+                $topic->save(false);
+                return $this->redirect($topic->getUrl());
+            }
+       // } else {
+       //     die('error 403');
+       // }
+    }
+
     public function actionAdd($id)
     {
 
@@ -107,7 +133,7 @@ class TopicsController extends WebController
                 'pagination' => [
                     'forcePageParam' => false,
                     'pageSize' => 10,
-                    'defaultPageSize'=>10,
+                    'defaultPageSize' => 10,
                     //'pageSizeLimit' => [1],
                 ]
             ]
@@ -121,8 +147,8 @@ class TopicsController extends WebController
 
     public function actionAddReply()
     {
-        $result=[];
-        $result['success']=false;
+        $result = [];
+        $result['success'] = false;
         if (!Yii::$app->user->isGuest) {
             $postModel = new Posts;
             $request = Yii::$app->request;
@@ -144,7 +170,7 @@ class TopicsController extends WebController
 
                             $postModel->save(false);
 
-                            $topic->last_post_id=$postModel->id;
+                            $topic->last_post_id = $postModel->id;
                             $topic->save(false);
                             $categoryData = $topic->category;
 
@@ -158,8 +184,6 @@ class TopicsController extends WebController
                             $categoryData->saveNode();
 
 
-
-
                             /*$ancestors = $categoryData->ancestors()->findAll();
                             if ($ancestors) {
                                 foreach ($ancestors as $category) {
@@ -171,16 +195,16 @@ class TopicsController extends WebController
                                     $category->saveNode();
                                 }
                             }*/
-                            $result['message']='success';
-                            $result['success']=true;
+                            $result['message'] = 'success';
+                            $result['success'] = true;
                         }
                     } else {
-                        $result['message']='error';
-                        $result['errors']=$postModel->getErrors();
+                        $result['message'] = 'error';
+                        $result['errors'] = $postModel->getErrors();
                     }
 
-                }else{
-                    $result['message']='no load data post';
+                } else {
+                    $result['message'] = 'no load data post';
                 }
                 return $result;
                 //return $this->render($view, [

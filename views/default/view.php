@@ -17,7 +17,7 @@ $subCategories = $model->children()->all();
 
                 <?= Yii::t('forum/default','SUB_CATEGORIES'); ?>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered">
 
