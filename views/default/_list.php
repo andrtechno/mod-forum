@@ -1,4 +1,4 @@
-<div class="card bg-light">
+<div class="card">
     <div class="card-header">
         <?= Html::a($data->title, $data->getUrl(), array('title' => $data->title)) ?>
         <span class="float-right date-time"><?= CMS::date($data->date_create,true,true) ?></span>

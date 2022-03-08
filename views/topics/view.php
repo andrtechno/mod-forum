@@ -75,7 +75,7 @@ use panix\engine\widgets\Pjax;
     <br/><br/>
 
     <?php if (!Yii::$app->user->isGuest) { ?>
-        <div class="card bg-light">
+        <div class="card">
             <div class="card-header">
                 Ответить
             </div>

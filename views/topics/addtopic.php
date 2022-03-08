@@ -32,7 +32,7 @@ $form = ActiveForm::begin([
 
     </div>
     <div class="col-md-3">
-        <div class="card bg-light">
+        <div class="card">
             <div class="card-header">Опции модератора</div>
             <div class="card-body">
                 <div class="form-inline">

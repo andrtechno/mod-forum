@@ -40,7 +40,7 @@ $subCategories = $model->children()->all();
     <?php echo $this->render('partials/_addtopic', array('model' => $model)); ?>
     <div class="clearfix"></div>
 
-    <div class="card bg-light">
+    <div class="card">
         <div class="card-header">
             <?= $model->name ?>
         </div>
