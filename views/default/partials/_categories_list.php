@@ -7,7 +7,9 @@ use panix\engine\CMS;
  * @var \panix\mod\forum\models\Categories $data
  */
 
-$userAvatar = $data->lastPost->getUserAvatar('32x32');
+    $userAvatar = '';
+
+
 ?>
 <tr>
     <td>
@@ -31,7 +33,8 @@ $userAvatar = $data->lastPost->getUserAvatar('32x32');
             <div class="last_post_avatar">
 
                 <?php
-                if ($data->lastPost->user) {
+                if ($data->lastPost) {
+                    $userAvatar = $data->lastPost->getUserAvatar('32x32');
                     echo Html::a(Html::img($userAvatar, [
                         'alt' => Yii::t('forum/default', 'LAST_POST_INFO', [
                             'title' => $data->topics[0]->title,
@@ -40,6 +43,7 @@ $userAvatar = $data->lastPost->getUserAvatar('32x32');
                         'class' => 'img-thumbnail'
                     ]), $data->lastPost->user->getProfileUrl());
                 } else {
+                    echo '111111111111111';
                     echo Html::img($userAvatar, [
                         'alt' => Yii::t('forum/default', 'LAST_POST_INFO', [
                             'title' => $data->topics[0]->title,

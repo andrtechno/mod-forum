@@ -1,7 +1,5 @@
 <?php
 
-namespace panix\mod\forum\migrations;
-
 /**
  * Generation migrate by PIXELION CMS
  *
@@ -33,7 +31,7 @@ class m170112_103125_forum_posts extends Migration
             'edit_datetime' => $this->dateTime(),
             'switch' => $this->boolean()->defaultValue(1),
             'created_at' => $this->integer(11)->null(),
-            'updated_at' => $this->integer(11)->null(),
+            'updated_at' => $this->integer(11)->null()
         ], $this->tableOptions);
     }
 

@@ -42,18 +42,18 @@ class DefaultController extends WebController
 
 
         $ancestors = $this->model->ancestors()->excludeRoot()->all();
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->pageName,
             'url' => ['/forum']
         ];
         foreach ($ancestors as $c) {
-            $this->breadcrumbs[] = [
+            $this->view->params['breadcrumbs'][] = [
                 'label' => $c->name,
                 'url' => $c->getUrl()
             ];
         }
 
-        $this->breadcrumbs[] = $this->model->name;
+        $this->view->params['breadcrumbs'][] = $this->model->name;
         return $this->render('view', array(
             'model' => $this->model,
         ));

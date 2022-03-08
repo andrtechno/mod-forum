@@ -120,7 +120,7 @@ $subCategories = $model->children()->all();
                                         <?php } ?>
 
                                         <br/>
-                                        <?= CMS::date($data->postsDesc[0]->created_at,true,true); ?>
+                                        <?= CMS::date($data->postsDesc[0]->created_at,true); ?>
                                     <?php } else { ?>
 
                                         <div class="text-center"><?= Yii::t('forum/default', 'NO_MESSAGES'); ?></div>

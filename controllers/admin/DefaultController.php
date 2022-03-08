@@ -37,7 +37,7 @@ class DefaultController extends AdminController {
 
     public function actionIndex() {
         $this->pageName = $this->module->name;
-        $this->breadcrumbs = array($this->pageName);
+        $this->view->params['breadcrumbs'] = array($this->pageName);
         $model = new Categories;
         $this->buttons = [
             [
@@ -62,11 +62,11 @@ class DefaultController extends AdminController {
 
 
         $isNewRecord = ($model->isNewRecord) ? true : false;
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->module->name,
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = ($model->isNewRecord) ? $model::t('CREATE_CATEGORY') : Html::encode($model->name);
+        $this->view->params['breadcrumbs'][] = ($model->isNewRecord) ? $model::t('CREATE_CATEGORY') : Html::encode($model->name);
         $this->pageName = ($isNewRecord) ? $model::t('CREATE_CATEGORY') : $model::t('UPDATE_CATEGORY');
 
 
@@ -114,7 +114,10 @@ class DefaultController extends AdminController {
         ));
         die;
     }
-
+    public function actionCreate()
+    {
+        return $this->actionUpdate(false);
+    }
 
     //TODO need multi language add and test
     public function actionCreateRoot() {

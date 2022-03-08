@@ -1,6 +1,5 @@
 <?php
 
-namespace panix\mod\forum\migrations;
 
 /**
  * Generation migrate by PIXELION CMS
@@ -29,7 +28,7 @@ class m170113_103005_forum_topics extends Migration
             'last_post_id' => $this->integer(11)->null(),
             'views' => $this->integer(11)->defaultValue(0)->unsigned(),
             'created_at' => $this->integer(11)->null(),
-            'updated_at' => $this->integer(11)->null(),
+            'updated_at' => $this->integer(11)->null()
         ], $this->tableOptions);
     }
 

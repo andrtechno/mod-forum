@@ -30,7 +30,7 @@ class TopicsController extends WebController
 
         //  $ancestors = $category->ancestors()->excludeRoot()->all();
 
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('forum/default', 'MODULE_NAME'),
             'url' => ['/forum']
         ];
@@ -39,7 +39,7 @@ class TopicsController extends WebController
         // foreach ($ancestors as $c){
         // $this->breadcrumbs[$c->name] = $c->getUrl();
         //  }
-        $this->breadcrumbs[] = $category->name;
+        $this->view->params['breadcrumbs'][] = $category->name;
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
             if ($model->save()) {
@@ -82,15 +82,15 @@ class TopicsController extends WebController
         if (!$this->model)
             $this->error404();
 
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('forum/default', 'MODULE_NAME'),
             'url' => ['/forum']
         ];
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->model->category->name,
             'url' => $this->model->category->getUrl()
         ];
-        $this->breadcrumbs[] = $this->model->title;
+        $this->view->params['breadcrumbs'][] = $this->model->title;
 
         $this->model->updateCounters(['views' => 1]);
 

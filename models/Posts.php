@@ -53,7 +53,11 @@ class Posts extends ActiveRecord
     {
         return ['/news/default/view', 'slug' => $this->slug];
     }
-
+    public function beforeSave($insert)
+    {
+        $this->created_at = strtotime($this->created_at);
+        return parent::beforeSave($insert);
+    }
 
     public function afterSave($insert, $changedAttributes)
     {
