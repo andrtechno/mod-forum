@@ -7,16 +7,34 @@ use panix\engine\CMS;
  * @var \panix\mod\forum\models\Categories $data
  */
 
-    $userAvatar = '';
+$userAvatar = '';
 
 
 ?>
 <tr>
     <td>
-        <?= Html::a($data->name, $data->getUrl()) ?> <?= Html::a('<i class="icon-add"></i>', ['/forum/default/add-cat', 'parent_id' => $data->id], ['class' => 'btn btn-sm btn-success']) ?>
+        <?= Html::a($data->name, $data->getUrl(), ['class' => 'h6']) ?>
+        <?php if (Yii::$app->user->can('admin')) { ?>
+            <?= Html::a('<i class="icon-add"></i>', ['/forum/default/add-cat', 'parent_id' => $data->id], ['class' => 'btn btn-sm btn-success']) ?>
+        <?php } ?>
         <div class="help-block"><?= $data->hint ?></div>
 
-
+        <?php
+        $parents = $data->children()->published()->all();
+        if ($parents) { ?>
+        <div class="forum-parents">
+        <?php
+            echo 'Подразделы: ';
+            $links=[];
+            foreach ($parents as $data) {
+                $links[]=Html::a($data->name, $data->getUrl(), ['class' => 'forum-parent-link']);
+                //echo Html::a($data->name, $data->getUrl(), ['class' => 'forum-parent-link']);
+               // echo ', ';
+            }
+            echo implode(', ',$links);
+        }
+        ?>
+        </div>
     </td>
     <td width="15%" class="text-right">
         <div>
@@ -35,13 +53,13 @@ use panix\engine\CMS;
                 <?php
                 if ($data->lastPost) {
                     $userAvatar = $data->lastPost->getUserAvatar('32x32');
-                    echo Html::a(Html::img($userAvatar, [
+                    /*echo Html::a(Html::img($userAvatar, [
                         'alt' => Yii::t('forum/default', 'LAST_POST_INFO', [
                             'title' => $data->topics[0]->title,
                             'username' => $data->lastPost->userName
                         ]),
                         'class' => 'img-thumbnail'
-                    ]), $data->lastPost->user->getProfileUrl());
+                    ]), $data->lastPost->user->getProfileUrl());*/
                 } else {
                     echo '111111111111111';
                     echo Html::img($userAvatar, [
@@ -62,8 +80,8 @@ use panix\engine\CMS;
                     От
                     <?php
                     if ($data->lastPost->user) {
-                        echo Html::a($data->lastPost->userName,['/']);
-                    }else{
+                        echo Html::a($data->lastPost->userName, ['/']);
+                    } else {
                         echo $data->lastPost->userName;
                     }
                     ?>

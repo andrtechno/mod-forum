@@ -37,6 +37,16 @@ class DefaultController extends WebController
         if (!$this->model)
             $this->error404();
 
+        if ($this->model->access){
+            $d = explode(',',$this->model->access);
+            foreach ($d as $dd){
+                if(!Yii::$app->user->can($dd)){
+                    $this->error404();
+                }
+            }
+
+        }
+
 
         //$this->dataModel->saveCounters(array('views' => 1));
 

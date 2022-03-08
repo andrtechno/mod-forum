@@ -1,4 +1,5 @@
 <?php
+
 use panix\engine\Html;
 use panix\mod\user\models\User;
 use panix\mod\forum\ForumAsset;
@@ -10,28 +11,37 @@ $total_posts = 0;
 <div class="forum">
     <h1><?= $this->context->pageName; ?></h1>
 
-    <?php foreach ($categories as $category) { ?>
-        <div class="card">
-            <div class="card-header">
+    <?php foreach ($categories as $category) {
+        if ($category->isAccess()) {
+            ?>
 
-                <?= $category->name ?>
-            </div>
-            <div class="card-body">
-
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
-                        <?php
-                        foreach ($category->children()->published()->all() as $data) {
-                            $total_posts += $data->count_posts;
-                            echo $this->render('partials/_categories_list', array('data' => $data));
-                        }
-                        ?>
-                    </table>
+            <div class="card bg-dark mb-3">
+                <div class="card-header">
+<h5 class="m-0">
+                    <?= $category->name ?>
+</h5>
                 </div>
+                <div class="card-body">
 
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <?php
+                            foreach ($category->children()->published()->all() as $data) {
+                                $total_posts += $data->count_posts;
+                                echo $this->render('partials/_categories_list', array('data' => $data));
+                            }
+                            ?>
+                        </table>
+                    </div>
+
+                </div>
             </div>
-        </div>
-    <?php } ?>
+            <?php
+
+        }
+
+
+    } ?>
 
     <div class="row">
         <div class="col-md-3 text-center">

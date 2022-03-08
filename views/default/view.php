@@ -12,10 +12,10 @@ $subCategories = $model->children()->all();
 
 
     <?php if (count($subCategories) > 0) { ?>
-        <div class="card">
+        <div class="card bg-dark">
             <div class="card-header">
 
-                Подфорумы
+                <?= Yii::t('forum/default','SUB_CATEGORIES'); ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -40,14 +40,14 @@ $subCategories = $model->children()->all();
     <?php echo $this->render('partials/_addtopic', array('model' => $model)); ?>
     <div class="clearfix"></div>
 
-    <div class="card">
+    <div class="card bg-dark">
         <div class="card-header">
             <?= $model->name ?>
         </div>
         <div class="card-body">
             <?php if ($model->topics) { ?>
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-condensed">
+                    <table class="table table-striped">
 
 
                         <?php foreach ($model->topicsList as $data) { ?>

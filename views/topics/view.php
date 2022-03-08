@@ -39,7 +39,7 @@ use panix\engine\widgets\Pjax;
 
     </div>
     <div class="clearfix"></div>
-    <div class="card">
+    <div class="card bg-dark">
         <div class="card-header">
             <?php
             if ($model->postsCount >= 1) {
@@ -75,7 +75,7 @@ use panix\engine\widgets\Pjax;
     <br/><br/>
 
     <?php if (!Yii::$app->user->isGuest) { ?>
-        <div class="card">
+        <div class="card bg-dark">
             <div class="card-header">
                 Ответить
             </div>

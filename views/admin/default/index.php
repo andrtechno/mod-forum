@@ -20,7 +20,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
     'contextmenu' => [
         'items' => new yii\web\JsExpression('function($node) {
-                var tree = $("#jsTree_CategoriesTree").jstree(true);
+                var tree = $("#CategoriesTree").jstree(true);
                 return {
                     "Switch": {
                         "icon":"icon-eye",

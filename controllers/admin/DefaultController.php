@@ -75,17 +75,38 @@ class DefaultController extends AdminController {
             if (Yii::$app->request->get('parent_id')) {
                 $parent = Categories::findOne(Yii::$app->request->get('parent_id'));
             } else {
-                $parent = Categories::findOne(1);
+                //$parent = Categories::findOne(1);
+               // CMS::dump($model->parent()->one());
+               // die;
+                $parent=false;
+                if(!$model->getIsNewRecord() && $model->parent()){
+                    $parent = $model->parent()->one();
+                    if(!$model->parent()->count()){
+                        //  $parent = $model->parent()->one();
+                        $model->lft = 1;
+                        $model->rgt = 2;
+                        $model->level = 1;
+                        $model->slug = 'root111';
+                        $model->full_path = '';
+                        $model->image = NULL;
+                        $model->switch = 1;
+                    }
+                }
+
+
             }
-            if ($model->getIsNewRecord()) {
+
+
+            if(!$model->getIsNewRecord()){
+                $model->saveNode();
+            } else{
                 if($parent){
                     $model->appendTo($parent);
                 }else{
                     $model->saveNode();
                 }
-            } else {
-                $model->saveNode();
             }
+
             return $this->redirect(['index']);
 
         }
@@ -120,10 +141,10 @@ class DefaultController extends AdminController {
     }
 
     //TODO need multi language add and test
-    public function actionCreateRoot() {
+    public function actionSection() {
         /** @var Categories|NestedSetsBehavior $model */
         $model = new Categories;
-        $model->name = 'Каталог продукции';
+      //  $model->name = 'Каталог продукции2';
         $model->lft = 1;
         $model->rgt = 2;
         $model->level = 1;
@@ -131,8 +152,14 @@ class DefaultController extends AdminController {
         $model->full_path = '';
         $model->image = NULL;
         $model->switch = 1;
-        $model->saveNode();
-        return $this->redirect(['create']);
+        $post = Yii::$app->request->post();
+        if ($model->load($post) && $model->validate()) {
+            $model->saveNode();
+            return $this->redirect(['index']);
+        }
+        return $this->render('section', ['model' => $model]);
+
+
     }
 
     public function getAddonsMenu() {

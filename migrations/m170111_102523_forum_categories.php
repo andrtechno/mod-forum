@@ -38,6 +38,7 @@ class m170111_102523_forum_categories extends Migration
             'views' => $this->integer(11)->defaultValue(0)->unsigned(),
             'created_at' => $this->integer(11)->null(),
             'updated_at' => $this->integer(11)->null(),
+            'access' => $this->string(255)->null(),
         ], $this->tableOptions);
 
         $this->createIndex('lft', Categories::tableName(), 'lft');

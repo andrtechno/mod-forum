@@ -1,4 +1,4 @@
-var tree = $('#jsTree_CategoriesTree');
+var tree = $('#CategoriesTree');
 tree.bind('move_node.jstree', function (node, parent) {
     var xhr = $.ajax({
         type: 'GET',

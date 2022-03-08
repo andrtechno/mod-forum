@@ -16,13 +16,15 @@ use panix\engine\bootstrap\ActiveForm;
         <?php
 
         $form = ActiveForm::begin([
-            'options' => ['class' => 'form-horizontal'],
+            'options' => [],
 
         ]);
         ?>
 
         <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
         <?= $form->field($model, 'hint') ?>
+
+        <?= $form->field($model, 'access')->dropdownList(\yii\helpers\ArrayHelper::map(Yii::$app->authManager->getRoles(),'name','description'),['multiple'=>'multiple']) ?>
 
     </div>
     <div class="card-footer text-center">

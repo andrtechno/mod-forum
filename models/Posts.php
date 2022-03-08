@@ -51,8 +51,9 @@ class Posts extends ActiveRecord
 
     public function getUrl()
     {
-        return ['/news/default/view', 'slug' => $this->slug];
+        return ['/forum/default/view', 'slug' => $this->slug];
     }
+
     public function beforeSave($insert)
     {
         $this->created_at = strtotime($this->created_at);
