@@ -24,13 +24,24 @@ $(document).on('click','.post-action-delete',function(e){
         dataType:'json',
         data:{ids:ids},
         success:function(response){
-            console.log(response);
+            if (response.success) {
+                common.notify(response.message,'success');
+                $.pjax.reload('#pjax-posts-list', {timeout : false});
+            }else{
+                       // $.each(response.errors, function(i,error){
+                       //     common.notify(error,'error');
+                       // });
+                common.notify(response.message,'error');
+            }
         }
     });
     
     return false;
 });
-
+$(document).on('click','.post-action-quote',function(e){
+tinyMCE.get('posts-text').setContent('[quote]dsaads[/quote]');
+return false;
+});
 ")
 ?>
 

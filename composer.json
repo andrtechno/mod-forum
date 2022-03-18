@@ -13,6 +13,9 @@
             "homepage": "https://pixelion.com.ua"
         }
     ],
+    "require": {
+        "chriskonnertz/bbcode": "v1.1.2",
+    },
     "autoload": {
         "psr-4": {
             "panix\\mod\\forum\\": ""

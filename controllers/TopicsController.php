@@ -29,17 +29,19 @@ class TopicsController extends WebController
 
     public function actionClose($id)
     {
-        // if (Yii::$app->user->can('admin')) {
-        $topic = Topics::findOne($id);
+        if (Yii::$app->user->can('admin')) {
+            $topic = Topics::findOne($id);
 
-        if ($topic) {
-            $topic->is_close = ($topic->is_close) ? 0 : 1;
-            $topic->save(false);
-            return $this->redirect($topic->getUrl());
+            if ($topic) {
+                $topic->is_close = ($topic->is_close) ? 0 : 1;
+                $topic->save(false);
+                return $this->redirect($topic->getUrl());
+            }
+            // } else {
+            //     die('error 403');
+        }else{
+            throw new ForbiddenHttpException();
         }
-        // } else {
-        //     die('error 403');
-        // }
     }
 
     public function actionAdd($id)
@@ -232,7 +234,7 @@ class TopicsController extends WebController
             $result['topic_id'] = $topic->id;
             if ($posts) {
 
-                // $post = Posts::deleteAll(['id'=>$posts]);
+                $post = Posts::deleteAll(['id'=>$posts]);
                 $result['success'] = true;
                 $result['message'] = 'OK';
 

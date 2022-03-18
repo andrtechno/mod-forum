@@ -53,7 +53,8 @@ use panix\engine\Html;
                 <div style="margin:0 auto;">
                     <?= Html::img($model->userAvatar, ['class' => 'img-thumbnail', 'alt' => $model->userName]) ?>
                 </div>
-                <div><?= $model->userName; ?></div>
+
+                <div><?= Html::a($model->userName,['/user/default/viewprofile','id'=>$model->user_id]); ?></div>
                 <?php if ($model->user) { ?>
 
                     <div><?= Yii::t('forum/default', 'MESSAGES', ['num' => $model->user->forum_posts_count]) ?></div>
@@ -76,8 +77,8 @@ use panix\engine\Html;
         <a class="btn btn-sm btn-link  d-none" href="#">Скрыть</a>
         <a class="btn btn-sm btn-link  d-none" href="#">Жалоба</a>
         <?php if (!Yii::$app->user->isGuest) { ?>
-            <a href="#" class="quote btn btn-sm btn-default d-none">Цитата each</a>
-            <?= Html::a('Ответить', ['/forum/default/quote', 'post_id' => $model->id], ['class' => ' d-none quote btn btn-sm btn-default']); ?>
+            <a href="#" class="quote post-action-quote btn btn-sm btn-primary">Цитировать</a>
+            <?= Html::a('Ответить', ['/forum/default/quote', 'post_id' => $model->id], ['class' => ' d-none1 no-fade quote btn btn-sm btn-primary']); ?>
 
         <?php } ?>
         <?php
