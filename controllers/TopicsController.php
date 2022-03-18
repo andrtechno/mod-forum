@@ -92,6 +92,7 @@ class TopicsController extends WebController
                         $category->saveNode(false);
                     }
                 }
+                return $this->redirect(['view','id'=>$model->id]);
             }
             return $this->redirect(['/forum/default/view', 'id' => $_GET['id']]);
 
@@ -101,6 +102,7 @@ class TopicsController extends WebController
 
     public function actionView($id)
     {
+
         $this->pageName = Yii::t('forum/default', 'MODULE_NAME');
         $this->model = Topics::findOne($id);
 
