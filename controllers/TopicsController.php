@@ -174,6 +174,9 @@ class TopicsController extends WebController
 
                             $topic->last_post_id = $postModel->id;
                             $topic->save(false);
+
+
+
                             $categoryData = $topic->category;
 
 

@@ -49,14 +49,32 @@ class Posts extends ActiveRecord
         return ($this->user) ? $this->user->getAvatarUrl($size) : Yii::$app->user->getGuestAvatarUrl($size);
     }
 
+    public function getTopicUrl($index = false)
+    {
+        if ($index) {
+            return ['/forum/topics/view', 'id' => $this->topic_id, '#' => 'post-'.$index];
+        } else {
+            return ['/forum/topics/view', 'id' => $this->topic_id];
+        }
+
+    }
+
     public function getUrl()
+    {
+        return ['/forum/default/view', 'id' => $this->id];
+    }
+
+    public function getUrl2()
     {
         return ['/forum/default/view', 'slug' => $this->slug];
     }
 
     public function beforeSave($insert)
     {
-        $this->created_at = strtotime($this->created_at);
+        //if ($this->created_at) {
+        //     echo $this->created_at;die;
+        //     $this->created_at = strtotime($this->created_at);
+        // }
         return parent::beforeSave($insert);
     }
 
@@ -80,7 +98,7 @@ class Posts extends ActiveRecord
             ['text', 'string', 'min' => 3],
             [['text', 'topic_id', 'user_id'], 'required'],
             //['date_create, date_update', 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
-            ['text', 'string', 'max' => 255],
+            ['text', 'string'],
             //['edit_user_id, user_id', 'numerical', 'integerOnly' => true],
             //  ['id, user_id, edit_user_id, edit_reason, edit_datetime, slug, text, full_text, date_update, date_create', 'safe'],
         ];
