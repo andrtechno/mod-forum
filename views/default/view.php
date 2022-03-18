@@ -143,7 +143,7 @@ $subCategories = $model->children()->all();
 
 
     <div class="">
-        <div class="">Share block</div>
+
 
         <?php
         $session = 0;

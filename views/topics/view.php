@@ -1,4 +1,5 @@
 <?php
+
 use panix\engine\Html;
 use panix\engine\CMS;
 use panix\engine\widgets\Pjax;
@@ -7,35 +8,59 @@ use panix\engine\widgets\Pjax;
  * @var \panix\mod\forum\models\Topics $model
  */
 
+$this->registerJs("
+$(document).on('click','.post-action-delete',function(e){
+    e.preventDefault();
+    var url = $(this).attr('href');
+    var ids = Array();
+    $('input.post-checkbox:checked').each(function () {
+        //console.log($(this).val());
+        ids.push($(this).val());
+    });
+    
+    $.ajax({
+        type:'POST',
+        url:url,
+        dataType:'json',
+        data:{ids:ids},
+        success:function(response){
+            console.log(response);
+        }
+    });
+    
+    return false;
+});
 
+")
 ?>
 
 <h1><?= $model->title ?></h1>
 <small>Автор <?= $model->user->username ?>, <?= CMS::date($model->created_at, true) ?></small>
 <div class="forum">
     <div class="form-group float-right">
-        <div class="dropdown">
-            <a class="btn btn-link dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-               aria-expanded="true">
-                Опции модератора
-
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <a class="dropdown-item" href="#"><i class="icon-rename"></i> Редактировать заголовок</a>
-                <a class="dropdown-item" href="#">Открыть тему</a>
-                <a class="dropdown-item" href="#"><i class="icon-move"></i> Переместить тему</a>
-                <div class="dropdown-item" role="separator"></div>
-                <a class="dropdown-item" href="#">Объединить тему</a>
-                <a class="dropdown-item" href="#">Скрыть</a>
-                <a class="dropdown-item" href="#">Посмотреть историю (опция администратора)</a>
-                <a class="dropdown-item" href="#">Отписать всех от этой темы</a>
-                <a class="dropdown-item" href="#"><i class="icon-delete"></i> <?= Yii::t('app/default', 'DELETE') ?></a>
+        <?php if (Yii::$app->user->can('admin')) { ?>
+            <div class="dropdown">
+                <a class="btn btn-link dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true">Опции модератора</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <a class="dropdown-item d-none" href="#"><i class="icon-rename"></i> Редактировать заголовок</a>
+                    <a class="dropdown-item d-none" href="#">Открыть тему</a>
+                    <a class="dropdown-item d-none" href="#"><i class="icon-move"></i> Переместить тему</a>
+                    <div class="dropdown-item d-none" role="separator"></div>
+                    <a class="dropdown-item d-none" href="#">Объединить тему</a>
+                    <a class="dropdown-item d-none" href="#">Скрыть</a>
+                    <?= Html::a((($model->is_close) ? '<i class="icon-locked"></i> Открыть тему' : '<i class="icon-locked"></i> Закрыть тему'), ['/forum/topics/close', 'id' => $model->id], ['class' => 'dropdown-item']); ?>
+                    <a class="dropdown-item d-none" href="#">Посмотреть историю (опция администратора)</a>
+                    <a class="dropdown-item d-none" href="#">Отписать всех от этой темы</a>
+                    <a class="dropdown-item post-action-delete no-fade" href="<?= \yii\helpers\Url::to(['/forum/topics/post-delete','id'=>$model->id]); // ?>">
+                        <i class="icon-delete"></i> <?= Yii::t('app/default', 'DELETE') ?>
+                    </a>
+                </div>
+                <?php if ($model->is_close) { ?>
+                    <a href="#" class="btn btn-danger"><i class="icon-locked"></i> Закрыта (нажмите для ответа)</a>
+                <?php } ?>
             </div>
-            <?php if ($model->is_close) { ?>
-                <a href="#" class="btn btn-danger"><i class="icon-locked"></i> Закрыта (нажмите для ответа)</a>
-            <?php } ?>
-        </div>
-
+        <?php } ?>
 
     </div>
     <div class="clearfix"></div>
@@ -98,20 +123,42 @@ use panix\engine\widgets\Pjax;
 
 
     <div class="">
-        <div class="">Share block</div>
+
 
         <?php
         $session = 0;
-        // $session = Session::model()->with('user')->findAllByAttributes(array('current_url' => Yii::$app->request->url));
-        ?>
-
-        <h4><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', ['num' => $session]); ?></h4>
-        <?php
         $t = 0;
         $guests = 0;
         $bots = 0;
         $users = 0;
-        $readNames = array();
+        $sessions = \panix\mod\user\models\Session::find()->all();
+        $readsUsers = [];
+        $readCount=0;
+        echo date('Y-m-d H:i:s',1647712861);
+        foreach ($sessions as $s) {
+            if ($s->url == Yii::$app->request->getUrl()) {
+                if ($s->user_type == 'User') {
+                    $readsUsers[] = $s->user_name;
+                }
+                $readCount++;
+            }
+            if ($s->user_type == 'User') {
+                $users++;
+                $usersList[] = Html::a($s->user_name,['/user/default/viewprofile','id'=>$s->user_id]);
+
+            }elseif($s->user_type == 'Guest'){
+                $guests++;
+
+            }
+        }
+
+        // $session = Session::model()->with('user')->findAllByAttributes(array('current_url' => Yii::$app->request->url));
+        ?>
+
+        <h4><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', ['num' => $readCount]); ?></h4>
+        <?php
+
+
         /*  foreach ($session as $val) {
 
               if ($val->user_type == 2 || $val->user_type == 3) {
@@ -146,7 +193,7 @@ use panix\engine\widgets\Pjax;
         <div><?= $users ?> пользователей, <?= $guests ?> гостей, N/A анонимных</div>
         <br/>
         <?php
-        echo implode(', ', $readNames);
+        echo implode(', ', $usersList);
         ?>
 
 

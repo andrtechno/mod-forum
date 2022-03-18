@@ -29,10 +29,12 @@ class Module extends WebModule implements BootstrapInterface
                 //'forum/quote/*' => 'forum/default/quote',
 
                 //topics
+
                 'forum/topic/<id:\d+>/page/<page:\d+>' => 'forum/topics/view',
                 'forum/topic/<id:\d+>' => 'forum/topics/view',
-                'forum/topic/<action:[0-9a-zA-Z_\-]+>' => 'forum/topics/<action>',
+
                 'forum/topic/<action:[0-9a-zA-Z_\-]+>/<id:\d+>' => 'forum/topics/<action>',
+                'forum/topic/<action:[0-9a-zA-Z_\-]+>' => 'forum/topics/<action>',
                 //'forum/edit-post/<id:\d+>' => 'forum/topics/<action>',
 
                 //'forum/<action:[0-9a-zA-Z_\-]+>/<parent_id:\d+>' => 'forum/default/<action>',

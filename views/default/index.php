@@ -66,19 +66,31 @@ $total_posts = 0;
     </div>
 
     <div class="">
-        <div class="">Share block</div>
 
-        <?php
-        $session = 0;
-        //$session = Session::model()->findAllByAttributes(array('current_url' => Yii::app()->request->url));
-        ?>
 
-        <div><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', ['num' => $session]); ?></div>
         <?php
         $total = 0;
         $guests = 0;
         $bots = 0;
         $users = 0;
+$usersList = [];
+        $session = 0;
+        //$session = Session::model()->findAllByAttributes(array('current_url' => Yii::app()->request->url));
+        $sessions = \panix\mod\user\models\Session::find()->all();
+
+        foreach ($sessions as $s){
+
+            if($s->user_type == 'User'){
+                $users++;
+                $usersList[]=$s->user_name;
+                $total++;
+            }
+        }
+        ?>
+
+        <div><?= Yii::t('forum/default', ($this->context->id == 'topics') ? 'VIEW_MEMBERS_TOPIC' : 'VIEW_MEMBERS_CAT', ['num' => $session]); ?></div>
+        <?php
+
 
         /*foreach ($session as $val) {
 
@@ -94,8 +106,9 @@ $total_posts = 0;
         ?>
         <div>Пользователей онлайн: <?= $total ?> (за последние 15 минут)</div>
 
-        admin
 
+
+        <?php echo implode(', ',$usersList); ?>
 
     </div>
 
@@ -106,7 +119,6 @@ $total_posts = 0;
         <a class="btn btn-link" href="#">Самые активные сегодня</a>
         <a class="btn btn-link" href="#">Самые активные Самый</a>
         <a class="btn btn-link" href="#">Популярный Контент</a>
-
 
     </div>
 </div>

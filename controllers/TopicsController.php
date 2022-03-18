@@ -27,19 +27,19 @@ class TopicsController extends WebController
         ];
     }
 
-    public function actionTopicClose($id)
+    public function actionClose($id)
     {
-       // if (Yii::$app->user->can('admin')) {
-            $topic = Topics::findOne($id);
+        // if (Yii::$app->user->can('admin')) {
+        $topic = Topics::findOne($id);
 
-            if ($topic) {
-                $topic->is_close = ($topic->is_close) ? 0 : 1;
-                $topic->save(false);
-                return $this->redirect($topic->getUrl());
-            }
-       // } else {
-       //     die('error 403');
-       // }
+        if ($topic) {
+            $topic->is_close = ($topic->is_close) ? 0 : 1;
+            $topic->save(false);
+            return $this->redirect($topic->getUrl());
+        }
+        // } else {
+        //     die('error 403');
+        // }
     }
 
     public function actionAdd($id)
@@ -92,7 +92,7 @@ class TopicsController extends WebController
                         $category->saveNode(false);
                     }
                 }
-                return $this->redirect(['view','id'=>$model->id]);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
             return $this->redirect(['/forum/default/view', 'id' => $_GET['id']]);
 
@@ -176,7 +176,6 @@ class TopicsController extends WebController
                             $topic->save(false);
 
 
-
                             $categoryData = $topic->category;
 
 
@@ -220,6 +219,30 @@ class TopicsController extends WebController
             }
         } else {
             throw new ForbiddenHttpException();
+        }
+    }
+
+    public function actionPostDelete($id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->isAjax && Yii::$app->user->can('admin')) {
+            $posts = Yii::$app->request->post('ids');
+
+            $topic = Topics::findOne($id);
+            $result['topic_id'] = $topic->id;
+            if ($posts) {
+
+                // $post = Posts::deleteAll(['id'=>$posts]);
+                $result['success'] = true;
+                $result['message'] = 'OK';
+
+            } else {
+                $result['success'] = false;
+                $result['message'] = 'Не выбрано не чего';
+            }
+            return $this->asJson($result);
+        } else {
+            throw new ForbiddenHttpException('only ajax & access');
         }
     }
 

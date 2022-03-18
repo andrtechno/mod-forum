@@ -17,8 +17,9 @@ use panix\engine\Html;
         <div class="float-right">
             <?php if (Yii::$app->user->can('admin')) { ?>
                 <?= CMS::ip($model->ip_create); ?>
+                <input type="checkbox" name="post[]" value="<?= $model->id; ?>" class="post-checkbox"/>
             <?php } ?>
-            <input type="checkbox" name="ads" class=""/>
+
             <?= Html::a('#' . ($index + 1), '#post-' . ($index + 1)); ?>
 
 
@@ -33,17 +34,18 @@ use panix\engine\Html;
                 ]); ?>
                 <div class="dropdown-menu" aria-labelledby="dropdown-share-<?= $index; ?>">
                     <a class="dropdown-item" target="_blank"
-                       href="https://www.facebook.com/sharer/sharer.php?u=3333link"><i class="icon-facebook"></i> Facebook</a>
+                       href="https://www.facebook.com/sharer/sharer.php?p[url]=<?= \yii\helpers\Url::to($model->getTopicUrl($index + 1),true); ?>&p[title]=Example Title"><i class="icon-facebook"></i> Facebook</a>
                     <a class="dropdown-item" target="_blank"
-                       href="http://twitter.com/share?text=text goes here&url=http://url goes here&hashtags=hashtag1,hashtag2,hashtag3"><i
+                       href="http://twitter.com/share?text=<?= $model->text; ?>&url=<?= \yii\helpers\Url::to($model->getTopicUrl($index + 1),true); ?>&hashtags=uo"><i
                                 class="icon-twitter"></i> Twitter</a>
-                    <a class="dropdown-item" target="_blank" href="#"><i class="icon-instagram"></i> Instagram</a>
+                    <a class="dropdown-item  d-none" target="_blank" href="#"><i class="icon-instagram"></i> Instagram</a>
                 </div>
             </span>
 
 
         </div>
     </div>
+
     <div class="card-body">
         <div class="row">
             <div class="col-md-2 col-sm-3 col-xs-4 text-center">
@@ -71,11 +73,11 @@ use panix\engine\Html;
     <div class="card-footer text-right">
 
 
-        <a class="btn btn-sm btn-link" href="#">Скрыть</a>
-        <a class="btn btn-sm btn-link" href="#">Жалоба</a>
+        <a class="btn btn-sm btn-link  d-none" href="#">Скрыть</a>
+        <a class="btn btn-sm btn-link  d-none" href="#">Жалоба</a>
         <?php if (!Yii::$app->user->isGuest) { ?>
-            <a href="#" class="quote btn btn-sm btn-default">Цитата each</a>
-            <?= Html::a('Ответить', ['/forum/quote', 'post_id' => $model->id], ['class' => 'quote btn btn-sm btn-default']); ?>
+            <a href="#" class="quote btn btn-sm btn-default d-none">Цитата each</a>
+            <?= Html::a('Ответить', ['/forum/default/quote', 'post_id' => $model->id], ['class' => ' d-none quote btn btn-sm btn-default']); ?>
 
         <?php } ?>
         <?php
